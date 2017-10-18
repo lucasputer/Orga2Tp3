@@ -6,6 +6,10 @@
 %include "imprimir.mac"
 
 extern GDT_DESC
+extern IDT_DESC
+extern idt_inicializar
+extern resetear_pic
+extern habilitar_pic
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -99,11 +103,19 @@ start:
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-
+    xchg bx, bx
+    call idt_inicializar
+    xchg bx, bx
     ; Cargar IDT
-
+    lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
-
+    xchg bx, bx
+    call resetear_pic
+    xchg bx, bx
+    call habilitar_pic
+    xchg bx, bx
+    sti
+    xchg bx, bx
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones

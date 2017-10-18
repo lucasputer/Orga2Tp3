@@ -50,3 +50,7 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+src/diskette.img
+src/*.tsko
+*.bin
+*.sym
