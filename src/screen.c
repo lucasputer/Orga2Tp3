@@ -63,13 +63,13 @@ void screen_inicializar()
     //linea negra
     screen_pintar_linea_h(espacio, fondo_negro, 0, 0, VIDEO_COLS);
     // fondo gris
-    screen_pintar_rect(espacio, fondo_gris, 1, 0, 43, VIDEO_COLS);
+    screen_pintar_rect(espacio, fondo_gris, 1, 0, 44, VIDEO_COLS);
     //barra de abajo
-    screen_pintar_rect(espacio, fondo_negro, 44, 0, 5, VIDEO_COLS);
+    screen_pintar_rect(espacio, fondo_negro, 45, 0, 5, VIDEO_COLS);
     //equipo rojo
-    screen_pintar_rect(espacio, fondo_rojo, 44, 32, 5, 7);
+    screen_pintar_rect(espacio, fondo_rojo, 45, 32, 5, 7);
     //equipo azul
-    screen_pintar_rect(espacio, fondo_azul, 44, 39, 5, 7);
+    screen_pintar_rect(espacio, fondo_azul, 45, 39, 5, 7);
 }
 
 uchar screen_valor_actual(uint fila, uint columna)
