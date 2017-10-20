@@ -10,7 +10,6 @@
 /* Atributos paginas */
 /* -------------------------------------------------------------------------- */
 
-
 /* Direcciones fisicas de codigos */
 /* -------------------------------------------------------------------------- */
 /* En estas direcciones estan los códigos de todas las tareas. De aqui se
@@ -19,3 +18,5 @@
 
 /* Direcciones fisicas de directorios y tablas de paginas del KERNEL */
 /* -------------------------------------------------------------------------- */
+void mmu_inicializar_dir_kernel() {
+}

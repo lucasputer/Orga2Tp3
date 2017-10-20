@@ -41,6 +41,7 @@ void screen_pintar_linea_h(unsigned char c, unsigned char color, int fila, int c
 void screen_pintar_linea_v(unsigned char c, unsigned char color, int fila, int columna, int alto);
 void screen_inicializar();
 void screen_pintar_puntajes();
+void screen_pintar_error(const int intCode, const int errorCode);
 
 void screen_actualizar_reloj_global();
 void screen_actualizar_reloj_pirata (jugador_t *j, pirata_t *pirata);

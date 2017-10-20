@@ -17,6 +17,6 @@
 #define MAPA_BASE_VIRTUAL 0x800000
 
 void mmu_inicializar();
-
+void mmu_inicializar_dir_kernel();
 
 #endif	/* !__MMU_H__ */

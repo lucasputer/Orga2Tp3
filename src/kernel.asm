@@ -54,10 +54,10 @@ start:
 
     ; Habilitar A20
     call habilitar_A20
-        xchg bx, bx
+    ;xchg bx, bx
     ; Cargar la GDT
     lgdt [GDT_DESC]
-    xchg bx, bx
+    ;xchg bx, bx
     ; Setear el bit PE del registro CR0
     mov eax, cr0
     or eax, 1
@@ -70,7 +70,7 @@ start:
     modoprotegido:
     
     ; Establecer selectores de segmentos
-    xchg bx, bx
+    ;xchg bx, bx
     xor eax, eax
     mov ax, DATA_0
     mov ds, ax
@@ -83,7 +83,7 @@ start:
     mov esp, 0x27000
     mov ebp, 0x27000
     ; Imprimir mensaje de bienvenida
-    xchg bx, bx
+    ;xchg bx, bx
     imprimir_texto_mp iniciando_mp_msg, iniciando_mp_len, 0x07, 0, 0
     ; Inicializar el juego
     
@@ -105,19 +105,22 @@ start:
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
-    xchg bx, bx
+    ;xchg bx, bx
     call idt_inicializar
-    xchg bx, bx
+    ;xchg bx, bx
     ; Cargar IDT
     lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
-    xchg bx, bx
-    call resetear_pic
-    xchg bx, bx
-    call habilitar_pic
-    xchg bx, bx
-    sti
-    xchg bx, bx
+    mov al, 2
+    mov cl, 0
+    div cl
+    ;xchg bx, bx
+    ;call resetear_pic
+    ;xchg bx, bx
+    ;call habilitar_pic
+    ;xchg bx, bx
+    ;sti
+    ;xchg bx, bx
     ; Cargar tarea inicial
 
     ; Habilitar interrupciones
