@@ -6,6 +6,7 @@
 %include "imprimir.mac"
 
 extern GDT_DESC
+extern screen_inicializar
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -83,6 +84,7 @@ start:
     ; Inicializar el juego
     
     ; Inicializar pantalla
+    call screen_inicializar
 
     ; Inicializar el manejador de memoria
 

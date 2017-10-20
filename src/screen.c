@@ -14,6 +14,11 @@ extern jugador_t jugadorA, jugadorB;
 
 static ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
 
+const uchar espacio = 32;
+const uchar fondo_negro = 0x00;
+const uchar fondo_gris = 0x70;
+const uchar fondo_rojo = 0x40;
+const uchar fondo_azul = 0x10;
 const char reloj[] = "|/-\\";
 #define reloj_size 4
 
@@ -31,6 +36,40 @@ void screen_pintar(uchar c, uchar color, uint fila, uint columna)
 {
     p[fila][columna].c = c;
     p[fila][columna].a = color;
+}
+
+void screen_pintar_rect(uchar c, uchar color, int fila, int columna, int alto, int ancho)
+{   
+    for(int row = fila; row < fila + alto; row++){
+        for (int col = columna; col < columna + ancho; col++){
+            p[row][col].c = c;
+            p[row][col].a = color;
+        }
+    }
+}
+
+void screen_pintar_linea_h(uchar c, uchar color, int fila, int columna, int ancho)
+{
+    screen_pintar_rect(c, color, fila, columna, 1, ancho);
+}
+
+void screen_pintar_linea_v(uchar c, uchar color, int fila, int columna, int alto)
+{
+    screen_pintar_rect(c, color, fila, columna, alto, 1);
+}
+
+void screen_inicializar()
+{
+    //linea negra
+    screen_pintar_linea_h(espacio, fondo_negro, 0, 0, VIDEO_COLS);
+    // fondo gris
+    screen_pintar_rect(espacio, fondo_gris, 1, 0, 43, VIDEO_COLS);
+    //barra de abajo
+    screen_pintar_rect(espacio, fondo_negro, 44, 0, 5, VIDEO_COLS);
+    //equipo rojo
+    screen_pintar_rect(espacio, fondo_rojo, 44, 32, 5, 7);
+    //equipo azul
+    screen_pintar_rect(espacio, fondo_azul, 44, 39, 5, 7);
 }
 
 uchar screen_valor_actual(uint fila, uint columna)
