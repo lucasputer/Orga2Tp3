@@ -122,3 +122,13 @@ void print_dec(uint numero, int size, uint x, uint y, unsigned short attr) {
 }
 
 
+void screen_pintar_error(uint intCode, uint errorCode){
+    print("Interrupcion: ",0,0,0x40);
+    print_dec(intCode, 3, 13, 0, 0x40);
+    print(" Error Code: ",17,0,0x40);
+    print_hex(errorCode, 3, 29, 0, 0x40);
+}
+void screen_pintar_interrupcion(uint intCode){
+    print("Interrupcion:",0,0,0x40);
+    print_dec(intCode, 3, 14, 0, 0x40);
+}

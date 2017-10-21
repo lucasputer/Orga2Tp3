@@ -111,9 +111,9 @@ start:
     ; Cargar IDT
     lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
-    mov al, 2
-    mov cl, 0
-    div cl
+    ;mov al, 2
+    ;mov cl, 0
+    ;div cl
     ;xchg bx, bx
     ;call resetear_pic
     ;xchg bx, bx

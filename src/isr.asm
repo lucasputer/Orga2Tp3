@@ -18,6 +18,8 @@ extern fin_intr_pic1
 extern sched_tick
 extern sched_tarea_actual
 
+extern screen_pintar_error
+extern screen_pintar_interrupcion
 
 ;;
 ;; Definición de MACROS
@@ -28,6 +30,8 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
+    push eax
+    call screen_pintar_interrupcion
     ;call imprimir mensaje con la interrupcion
     jmp $
 
@@ -38,6 +42,8 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
+    push eax
+    call screen_pintar_error
     ;call imprimir mensaje con la interrupcion
     ;recuperar la esp el error_core
     jmp $
