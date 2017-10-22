@@ -19,6 +19,9 @@ const uchar fondo_negro = 0x00;
 const uchar fondo_gris = 0x70;
 const uchar fondo_rojo = 0x40;
 const uchar fondo_azul = 0x10;
+const uchar texto_blanco = 0x0F;
+const char* nombre_grupo = "Jan Michael Vincent";
+const uint nombre_grupo_len = 19;
 const char reloj[] = "|/-\\";
 #define reloj_size 4
 
@@ -70,6 +73,23 @@ void screen_inicializar()
     screen_pintar_rect(espacio, fondo_rojo, 45, 32, 5, 7);
     //equipo azul
     screen_pintar_rect(espacio, fondo_azul, 45, 39, 5, 7);
+    //nombre del grupo
+    print(nombre_grupo,VIDEO_COLS - nombre_grupo_len,0,texto_blanco);
+    //puntajes iniciales
+    screen_pintar_puntaje("000",ROJO);
+    screen_pintar_puntaje("000",AZUL);
+
+}
+
+void screen_pintar_puntaje(const char * puntaje, equipo equipo){
+    uchar color = texto_blanco;
+    if (equipo == ROJO){
+        color =  color | fondo_rojo;
+        print(puntaje,34,47,color);
+    }else{
+        color = color | fondo_azul;
+        print(puntaje,41,47,color);
+    }
 }
 
 uchar screen_valor_actual(uint fila, uint columna)
@@ -120,5 +140,6 @@ void print_dec(uint numero, int size, uint x, uint y, unsigned short attr) {
         p[y][x + size - i - 1].a = attr;
     }
 }
+
 
 

@@ -23,6 +23,8 @@ typedef struct ca_s {
     unsigned char a;
 } ca;
 
+typedef enum { ROJO, AZUL } equipo;
+
 
 struct pirata_t;
 typedef struct pirata_t pirata_t;
@@ -42,6 +44,7 @@ void screen_pintar_linea_v(unsigned char c, unsigned char color, int fila, int c
 void screen_inicializar();
 void screen_pintar_puntajes();
 void screen_pintar_error(const int intCode, const int errorCode);
+void screen_pintar_puntaje(const char * puntaje, equipo equipo);
 
 void screen_actualizar_reloj_global();
 void screen_actualizar_reloj_pirata (jugador_t *j, pirata_t *pirata);
