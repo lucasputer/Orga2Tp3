@@ -20,10 +20,17 @@ const uchar fondo_gris = 0x70;
 const uchar fondo_rojo = 0x40;
 const uchar fondo_azul = 0x10;
 const uchar texto_blanco = 0x0F;
+const uchar texto_rojo = 0x04;
+const uchar texto_azul = 0x01;
+const uchar fondo_rojo_letras_blancas = 0x4F;
 const char* nombre_grupo = "Jan Michael Vincent";
+const char* relojes = "1 2 3 4 5 6 7 8";
 const uint nombre_grupo_len = 19;
 const char reloj[] = "|/-\\";
+const char* container_tarea_idle = "( )";
+const uint container_tarea_idle_offset = 5;
 #define reloj_size 4
+
 
 
 void screen_actualizar_reloj_global()
@@ -76,9 +83,44 @@ void screen_inicializar()
     //nombre del grupo
     print(nombre_grupo,VIDEO_COLS - nombre_grupo_len,0,texto_blanco);
     //puntajes iniciales
+    screen_pintar_puntajes();
+    screen_pintar_relojes();
+    //lugares disponibles;
+    for(int i = 1; i < 9; i++){
+        screen_pintar_lugar_disponible(ROJO, i);
+        screen_pintar_lugar_disponible(AZUL, i);
+    }
+    print(container_tarea_idle,VIDEO_COLS - container_tarea_idle_offset,49,texto_blanco);
+
+}
+
+void  screen_pintar_relojes(){
+    int columna = 3;
+    int fila = 46;
+    print(relojes, columna, fila, texto_blanco);
+    columna = 60;
+    print(relojes, columna, fila, texto_blanco);
+}
+
+void screen_pintar_lugar_disponible(equipo eq, int posicion){
+    int fila = 48;
+    int color = fondo_negro;
+    int columna = 0;
+    int offset = (posicion - 1)*2;
+    if(eq == ROJO){
+        color = color | texto_rojo;
+        columna = 3 + offset;
+    }else{
+        color = color | texto_azul;
+        columna = 60 + offset;
+    }
+    char * c = "X ";
+    print(c,columna,fila,color);
+}
+
+void screen_pintar_puntajes(){
     screen_pintar_puntaje("000",ROJO);
     screen_pintar_puntaje("000",AZUL);
-
 }
 
 void screen_pintar_puntaje(const char * puntaje, equipo equipo){
@@ -142,14 +184,13 @@ void print_dec(uint numero, int size, uint x, uint y, unsigned short attr) {
 }
 
 
-
 void screen_pintar_error(uint intCode, uint errorCode){
-    print("Interrupcion: ",0,0,0x40);
-    print_dec(intCode, 3, 13, 0, 0x40);
-    print(" Error Code: ",17,0,0x40);
-    print_hex(errorCode, 3, 29, 0, 0x40);
+    print("Interrupcion: ",0,0,fondo_rojo_letras_blancas);
+    print_dec(intCode, 3, 13, 0, fondo_rojo_letras_blancas);
+    print(" Error Code: ",17,0,fondo_rojo_letras_blancas);
+    print_hex(errorCode, 3, 29, 0, fondo_rojo_letras_blancas);
 }
 void screen_pintar_interrupcion(uint intCode){
-    print("Interrupcion:",0,0,0x40);
-    print_dec(intCode, 3, 14, 0, 0x40);
+    print("Interrupcion:",0,0,fondo_rojo_letras_blancas);
+    print_dec(intCode, 3, 14, 0, fondo_rojo_letras_blancas);
 }
