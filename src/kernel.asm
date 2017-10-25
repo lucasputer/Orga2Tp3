@@ -11,6 +11,8 @@ extern IDT_DESC
 extern idt_inicializar
 extern resetear_pic
 extern habilitar_pic
+extern mmu_inicializar_dir_kernel
+extern mmu_inicializar
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -91,12 +93,21 @@ start:
     call screen_inicializar
 
     ; Inicializar el manejador de memoria
+    call mmu_inicializar
 
     ; Inicializar el directorio de paginas
+    call mmu_inicializar_dir_kernel
 
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
+    xchg bx, bx
+    mov eax, 0x00027000 ;page_directory == 0x27000
+    mov cr3, eax
+
+    mov eax, cr0
+    or eax, 0x80000000 ; habilito paginacion
+    mov cr0, eax
 
     ; Inicializar tss
 
