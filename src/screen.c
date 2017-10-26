@@ -194,3 +194,7 @@ void screen_pintar_interrupcion(uint intCode){
     print("Interrupcion:",0,0,fondo_rojo_letras_blancas);
     print_dec(intCode, 3, 14, 0, fondo_rojo_letras_blancas);
 }
+void screen_pintar_tecla(uint intCode){
+    print("Tecla:",0,0,fondo_rojo_letras_blancas);
+    print_dec(intCode, 5, 14, 0, fondo_rojo_letras_blancas);
+}

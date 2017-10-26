@@ -101,13 +101,13 @@ start:
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-    xchg bx, bx
-    mov eax, 0x00027000 ;page_directory == 0x27000
-    mov cr3, eax
+    ;xchg bx, bx
+    ;mov eax, 0x00027000 ;page_directory == 0x27000
+    ;mov cr3, eax
 
-    mov eax, cr0
-    or eax, 0x80000000 ; habilito paginacion
-    mov cr0, eax
+    ;mov eax, cr0
+    ;or eax, 0x80000000 ; habilito paginacion
+    ;mov cr0, eax
 
     ; Inicializar tss
 
@@ -122,15 +122,19 @@ start:
     ; Cargar IDT
     lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
+    
+    ;DIVIDO POR CERO:
     ;mov al, 2
     ;mov cl, 0
     ;div cl
+    
+    xchg bx, bx
+    
+    call resetear_pic
     ;xchg bx, bx
-    ;call resetear_pic
+    call habilitar_pic
     ;xchg bx, bx
-    ;call habilitar_pic
-    ;xchg bx, bx
-    ;sti
+    sti
     ;xchg bx, bx
     ; Cargar tarea inicial
 
