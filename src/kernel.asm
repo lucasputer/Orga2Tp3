@@ -108,6 +108,7 @@ start:
     mov eax, cr0
     or eax, 0x80000000 ; habilito paginacion
     mov cr0, eax
+    xchg bx, bx
 
     ; Inicializar tss
 
