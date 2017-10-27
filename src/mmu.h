@@ -16,7 +16,7 @@
 #define MAPA_BASE_FISICA  0x500000
 #define MAPA_BASE_VIRTUAL 0x800000
 
-#define MEMORY_LIMIT 0x0003FFFFF
+#define MEMORY_LIMIT 0x3FFFFF
 #define PD_ADDRESS 0x27000
 #define KP_ADDRESS 0x28000
 
@@ -24,10 +24,13 @@ typedef struct pde_s {
     int present:1;
     int read_write:1;
     int user_supervisor:1;
+    int page_write_through:1;
+    int page_cache_disable:1;
     int accesed:1;
     int ignored1:1;
     int page_size:1;
-    int ignored2:4;
+    int global:1;
+    int ignored2:3;
     int address:20;
 } pde;
 
@@ -49,8 +52,8 @@ void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
 void mmu_inicializar_dir_pirata();
 int dame_libre();
-void mmu_inicializar_directorio(int virtual, int cr3, int read_write, int user_supervisor);
-void mmu_inicializar_tabla(int virtual, int cr3, int read_write, int user_supervisor);
+void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_supervisor);
+void mmu_inicializar_tabla(int pde_i, int pte_i, int cr3, int read_write, int user_supervisor);
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica, int read_write, int user_supervisor);
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
 

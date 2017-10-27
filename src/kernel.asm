@@ -92,6 +92,11 @@ start:
     ; Inicializar pantalla
     call screen_inicializar
 
+    call idt_inicializar
+    ;xchg bx, bx
+    ; Cargar IDT
+    lidt [IDT_DESC]
+
     ; Inicializar el manejador de memoria
     call mmu_inicializar
 
@@ -101,8 +106,7 @@ start:
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
-    xchg bx, bx
-    mov eax, 0x00027000 ;page_directory == 0x27000
+    mov eax, 0x27000 ;page_directory == 0x27000
     mov cr3, eax
 
     mov eax, cr0
@@ -118,10 +122,10 @@ start:
 
     ; Inicializar la IDT
     ;xchg bx, bx
-    call idt_inicializar
-    ;xchg bx, bx
-    ; Cargar IDT
-    lidt [IDT_DESC]
+    ; call idt_inicializar
+    ; ;xchg bx, bx
+    ; ; Cargar IDT
+    ; lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
     ;mov al, 2
     ;mov cl, 0
