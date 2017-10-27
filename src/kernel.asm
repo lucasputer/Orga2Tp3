@@ -113,7 +113,6 @@ start:
     or eax, 0x80000000 ; habilito paginacion
     mov cr0, eax
     xchg bx, bx
-
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -127,15 +126,19 @@ start:
     ; ; Cargar IDT
     ; lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
+    
+    ;DIVIDO POR CERO:
     ;mov al, 2
     ;mov cl, 0
     ;div cl
+    
+    xchg bx, bx
+    
+    call resetear_pic
     ;xchg bx, bx
-    ;call resetear_pic
+    call habilitar_pic
     ;xchg bx, bx
-    ;call habilitar_pic
-    ;xchg bx, bx
-    ;sti
+    sti
     ;xchg bx, bx
     ; Cargar tarea inicial
 
