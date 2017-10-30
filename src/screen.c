@@ -25,6 +25,7 @@ const uchar texto_azul = 0x01;
 const uchar fondo_rojo_letras_blancas = 0x4F;
 const char* nombre_grupo = "Jan Michael Vincent";
 const char* relojes = "1 2 3 4 5 6 7 8";
+const char* teclado = "1234567890-=qqqwertyuiop[]\\aasdfghjkl;'zzzzxcvbnm,./";
 const uint nombre_grupo_len = 19;
 const char reloj[] = "|/-\\";
 const char* container_tarea_idle = "( )";
@@ -195,6 +196,10 @@ void screen_pintar_interrupcion(uint intCode){
     print_dec(intCode, 3, 14, 0, fondo_rojo_letras_blancas);
 }
 void screen_pintar_tecla(uint intCode){
-    print("Tecla:",0,0,fondo_rojo_letras_blancas);
-    print_dec(intCode, 5, 14, 0, fondo_rojo_letras_blancas);
+    if(intCode > 53){
+        intCode -= 130;
+        char* s = "";
+        s[0] = teclado[intCode];
+        print(s,0, 0, fondo_rojo_letras_blancas);
+    }
 }
