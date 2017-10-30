@@ -50,6 +50,15 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 	tlbflush();
 }
 
+void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3){
+	unsigned int pde_i = virtual >> 22;
+	unsigned int pte_i = (virtual << 10) >> 22;
+	pde* directorio = (pde*) cr3;
+	pte* tablas = (pte*) (directorio[pde_i].address << 12);
+	tablas[pte_i].present = 0;
+	tlbflush();
+}
+
 void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_supervisor) {
 	unsigned int pde_i = indice;
 	pte* tabla = (pte*) dame_libre();
@@ -114,5 +123,8 @@ void mmu_inicializar_dir_kernel() {
 	for (int i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
 		mmu_mapear_pagina(i, PD_ADDRESS, i, 1, 0);
 	}
+}
+
+void mmu_inicializar_dir_pirata(int posicion_mapa, int posicion_codigo){
 
 }
