@@ -38,7 +38,9 @@ typedef unsigned int   uint;
 #define GDT_IDX_CODE_3              9 // 0x0048
 #define GDT_IDX_DATA_0              10 // 0x0050 == 0101 0000
 #define GDT_IDX_DATA_3              11 // 1011 << 3 == 0101 1000 ==> 0x0058
-#define GDT_IDX_VIDEO               12 // 0110 0000  == 0x0060            
+#define GDT_IDX_VIDEO               12 // 0110 0000  == 0x0060 
+#define GDT_IDX_TSS_INIT			13	//01101000 = 0110 1000 = 0X0068
+#define GDT_IDX_TSS_IDLE			14  // 01110000 = 0111 0000 = 0X0070         
 
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */

@@ -13,6 +13,8 @@ extern resetear_pic
 extern habilitar_pic
 extern mmu_inicializar_dir_kernel
 extern mmu_inicializar
+extern tss_inicializar
+extern tss_inicializar_idle
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -112,19 +114,18 @@ start:
     mov eax, cr0
     or eax, 0x80000000 ; habilito paginacion
     mov cr0, eax
-    xchg bx, bx
     ; Inicializar tss
-
+    call tss_inicializar
     ; Inicializar tss de la tarea Idle
-
+    call tss_inicializar_idle
     ; Inicializar el scheduler
 
     ; Inicializar la IDT
     ;xchg bx, bx
-    ; call idt_inicializar
+    call idt_inicializar
     ; ;xchg bx, bx
     ; ; Cargar IDT
-    ; lidt [IDT_DESC]
+    lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
     
     ;DIVIDO POR CERO:
@@ -132,20 +133,19 @@ start:
     ;mov cl, 0
     ;div cl
     
-    xchg bx, bx
     
     call resetear_pic
     ;xchg bx, bx
     call habilitar_pic
     ;xchg bx, bx
-    sti
     ;xchg bx, bx
     ; Cargar tarea inicial
-
+    mov ax, 0x0068
+    ltr ax
     ; Habilitar interrupciones
-
+    sti 
     ; Saltar a la primera tarea: Idle
-
+    jmp 0x0070:0
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
     mov ebx, 0xFFFF

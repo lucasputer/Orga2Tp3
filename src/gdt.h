@@ -9,7 +9,7 @@
 #define __GDT_H__
 
 #include "defines.h"
-
+#include "tss.h"
 
 
 typedef struct str_gdt_descriptor {
