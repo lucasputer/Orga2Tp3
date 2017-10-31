@@ -11,6 +11,8 @@ extern IDT_DESC
 extern idt_inicializar
 extern resetear_pic
 extern habilitar_pic
+extern mmu_inicializar_dir_kernel
+extern mmu_inicializar
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -90,14 +92,27 @@ start:
     ; Inicializar pantalla
     call screen_inicializar
 
+    call idt_inicializar
+    ;xchg bx, bx
+    ; Cargar IDT
+    lidt [IDT_DESC]
+
     ; Inicializar el manejador de memoria
+    call mmu_inicializar
 
     ; Inicializar el directorio de paginas
+    call mmu_inicializar_dir_kernel
 
     ; Cargar directorio de paginas
 
     ; Habilitar paginacion
+    mov eax, 0x27000 ;page_directory == 0x27000
+    mov cr3, eax
 
+    mov eax, cr0
+    or eax, 0x80000000 ; habilito paginacion
+    mov cr0, eax
+    xchg bx, bx
     ; Inicializar tss
 
     ; Inicializar tss de la tarea Idle
@@ -106,20 +121,24 @@ start:
 
     ; Inicializar la IDT
     ;xchg bx, bx
-    call idt_inicializar
-    ;xchg bx, bx
-    ; Cargar IDT
-    lidt [IDT_DESC]
+    ; call idt_inicializar
+    ; ;xchg bx, bx
+    ; ; Cargar IDT
+    ; lidt [IDT_DESC]
     ; Configurar controlador de interrupciones
+    
+    ;DIVIDO POR CERO:
     ;mov al, 2
     ;mov cl, 0
     ;div cl
+    
+    xchg bx, bx
+    
+    call resetear_pic
     ;xchg bx, bx
-    ;call resetear_pic
+    call habilitar_pic
     ;xchg bx, bx
-    ;call habilitar_pic
-    ;xchg bx, bx
-    ;sti
+    sti
     ;xchg bx, bx
     ; Cargar tarea inicial
 

@@ -25,7 +25,6 @@ typedef struct ca_s {
 
 typedef enum { ROJO, AZUL } equipo;
 
-
 struct pirata_t;
 typedef struct pirata_t pirata_t;
 
