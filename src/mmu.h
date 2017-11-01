@@ -50,7 +50,7 @@ typedef struct pte_s {
 
 void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
-void mmu_inicializar_dir_pirata(int posicion_mapa, int posicion_codigo);
+int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo);
 int dame_libre();
 void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_supervisor);
 void mmu_inicializar_tabla(int pde_i, int pte_i, int cr3, int read_write, int user_supervisor);

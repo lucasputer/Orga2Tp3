@@ -15,6 +15,7 @@ extern mmu_inicializar_dir_kernel
 extern mmu_inicializar
 extern tss_inicializar
 extern tss_inicializar_idle
+extern mmu_inicializar_dir_pirata
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -144,6 +145,16 @@ start:
     ltr ax
     ; Habilitar interrupciones
     sti 
+
+    xchg bx, bx
+    push 0x10000
+    push 0x00
+    push 0x00
+    
+    call mmu_inicializar_dir_pirata
+    xchg bx, bx
+    mov cr3, eax
+
     ; Saltar a la primera tarea: Idle
     jmp 0x0070:0
     ; Ciclar infinitamente (por si algo sale mal...)

@@ -125,6 +125,25 @@ void mmu_inicializar_dir_kernel() {
 	}
 }
 
-void mmu_inicializar_dir_pirata(int posicion_mapa, int posicion_codigo){
+int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo){
+	int nuevo_cr3 = dame_libre();
+	
+	for (int i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
+		mmu_mapear_pagina(i, nuevo_cr3, i, 1, 0);
+	}
 
+	int posicion_en_mapa = 0x500000 + (y * MAPA_ANCHO) + x;
+
+	unsigned int actual_cr3 = rcr3();
+
+
+	mmu_mapear_pagina(posicion_en_mapa, actual_cr3, posicion_en_mapa, 0, 0);
+
+	for(int i = 0; i < 0x400; i += 1){
+		((int*)posicion_en_mapa)[i] = ((int*)posicion_codigo)[i];
+	}
+
+	mmu_mapear_pagina(0x400000, nuevo_cr3, posicion_en_mapa, 0, 3);
+
+	return nuevo_cr3;
 }
