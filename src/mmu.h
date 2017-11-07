@@ -56,5 +56,5 @@ void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_su
 void mmu_inicializar_tabla(int pde_i, int pte_i, int cr3, int read_write, int user_supervisor);
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica, int read_write, int user_supervisor);
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
-
+int* damePosicionAledanias(int base, int x, int y);
 #endif	/* !__MMU_H__ */

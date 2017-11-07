@@ -91,7 +91,17 @@ _isr%1:
     call fin_intr_pic1
     ;call screen_pintar_tecla
     popa
-    mov eax, 0x42
+    cmp eax, 1
+    je .moverse
+    cmp eax, 2
+    je .cavar
+    cmp eax, 3
+    je .posicion
+
+    .moverse:
+    .cavar:
+    .posicion:
+        
     iret
 
 %endmacro

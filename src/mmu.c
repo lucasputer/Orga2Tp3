@@ -128,22 +128,38 @@ void mmu_inicializar_dir_kernel() {
 int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo){
 	int nuevo_cr3 = dame_libre();
 	
+
+	//identitiy mapping para la seccion del kernel
 	for (int i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
 		mmu_mapear_pagina(i, nuevo_cr3, i, 1, 0);
 	}
 
-	int posicion_en_mapa = 0x500000 + (y * MAPA_ANCHO) + x;
+	//detectamos posicion en mapa en base a la posicion x e y
+	int posicion_en_mapa = MAPA_BASE_FISICA + (y * MAPA_ANCHO) + x;
 
 	unsigned int actual_cr3 = rcr3();
 
-
-	mmu_mapear_pagina(posicion_en_mapa, actual_cr3, posicion_en_mapa, 0, 0);
-
+	//este mapeo deberia ser una posicion hardcodeada mas grande que todo el especio de memoria del so para evitar colisiones
+	mmu_mapear_pagina(0x450000, actual_cr3, posicion_en_mapa, 0, 0);
+	
+	//copiando el codigo de la tarea
 	for(int i = 0; i < 0x400; i += 1){
-		((int*)posicion_en_mapa)[i] = ((int*)posicion_codigo)[i];
+		((int*)0x450000)[i] = ((int*)posicion_codigo)[i];
 	}
 
+	//mapeo el 0x400000 para que la tarea puedea empezar a ejecutar
 	mmu_mapear_pagina(0x400000, nuevo_cr3, posicion_en_mapa, 0, 3);
 
+	//habria que mapear las posiciones aledañas en el nuevo_cr3 que sea read only
+	//usando la direccion base del mapa virtual
+	int * pos = damePosicionAledanias(MAPA_BASE_VIRTUAL, x, y);
+	for(int i = 0;i<9;i++) {
+		mmu_mapear_pagina(pos[i], nuevo_cr3, pos[i], 1, 3);
+	}
 	return nuevo_cr3;
+}
+
+int* damePosicionAledanias(int base, int x, int y) {
+	int posiciones[9] = {0,0,0,0,0,0,0,0,0};
+	return &posiciones;
 }

@@ -61,4 +61,5 @@ tss tss_idle;
 
 void tss_inicializar();
 void tss_inicializar_idle();
+void tss_inicializar_tarea(int tarea, int jugador, int x, int y);
 #endif  /* !__TSS_H__ */
