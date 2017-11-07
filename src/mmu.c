@@ -160,6 +160,5 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo){
 }
 
 int* damePosicionAledanias(int base, int x, int y) {
-	int posiciones[9] = {0,0,0,0,0,0,0,0,0};
-	return &posiciones;
+	return 0;
 }
