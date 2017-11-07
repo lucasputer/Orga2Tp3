@@ -178,7 +178,7 @@ void tss_inicializar_tarea(int tarea, int jugador, int x, int y) {
 	if(jugador == 1) {
 		int t_pd = mmu_inicializar_dir_pirata(x, y, tarea);
 		//mmu_mapear_pagina(0x101000, t_pd, dame_proxima_libre())
-		tss_act = tss_jugadorA[cantidad_tareas_a];
+		tss tss_act = tss_jugadorA[cantidad_tareas_a];
 		init_tss(&tss_act, 0x48,0x58,0x50);
 		tss_act.esp = tarea + 0xfff;
 		tss_act.ebp = tarea + 0xfff;
