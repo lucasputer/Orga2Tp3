@@ -176,7 +176,12 @@ void init_tss(tss* new_tss, int cs, int ds, int ss0) {
 void tss_inicializar_tarea(int tarea, int jugador, int x, int y) {
 	//JUGADOR A
 	if(jugador == 1) {
-		int t_pd = mmu_inicializar_dir_pirata(x, y, tarea);
+		int fisicas[3];
+		int i = 0;
+		for(i=0;i<3;i++){
+			fisicas[i] = dame_libre();
+		}
+		int t_pd = mmu_inicializar_dir_pirata(x, y, tarea, fisicas);
 		//mmu_mapear_pagina(0x101000, t_pd, dame_proxima_libre())
 		tss tss_act = tss_jugadorA[cantidad_tareas_a];
 		init_tss(&tss_act, 0x48,0x58,0x50);

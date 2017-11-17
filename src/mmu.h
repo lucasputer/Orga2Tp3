@@ -13,12 +13,18 @@
 
 #define CODIGO_BASE       0X400000
 
-#define MAPA_BASE_FISICA  0x500000
-#define MAPA_BASE_VIRTUAL 0x800000
-
 #define MEMORY_LIMIT 0x3FFFFF
 #define PD_ADDRESS 0x27000
 #define KP_ADDRESS 0x28000
+
+#define FISICAS_PTE_JUGADOR 3
+
+#define MAPA_BASE_VIRTUAL 0x800000
+
+#define DIR_VIRTUAL_COPIAR_CODIGO_TAREA 0x500000
+
+#define PDE_MAPPING_SIZE 0X400000
+
 
 typedef struct pde_s {
     int present:1;
@@ -50,9 +56,9 @@ typedef struct pte_s {
 
 void mmu_inicializar();
 void mmu_inicializar_dir_kernel();
-int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo);
+int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int* dir_fisicas_pte_jugador);
 int dame_libre();
-void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_supervisor);
+void mmu_inicializar_directorio(int indice, int cr3, int read_write, int user_supervisor, int dir_fisica_pte);
 void mmu_inicializar_tabla(int pde_i, int pte_i, int cr3, int read_write, int user_supervisor);
 void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisica, int read_write, int user_supervisor);
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
