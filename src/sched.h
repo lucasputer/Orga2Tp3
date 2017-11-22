@@ -10,5 +10,7 @@
 
 #include "game.h"
 
+void sched_proxima_a_ejecutar();
+void sched_tick();
 
 #endif	/* !__SCHED_H__ */

@@ -52,20 +52,6 @@ _isr%1:
 
 %endmacro
 
-%macro ISR_RELOJ 1
-global _isr%1
-
-_isr%1:
-    pusha
-    call fin_intr_pic1
-    mov eax, %1
-    ;xchg bx, bx
-    ;call screen_pintar_interrupcion
-    call game_tick
-    popa
-    iret
-
-%endmacro
 
 %macro ISR_TECLADO 1
 global _isr%1
@@ -133,14 +119,22 @@ ISR 16
 ISR_CON_ERROR 17
 ISR 18
 ISR 19
-ISR_RELOJ 32
 ISR_TECLADO 33
 ISR_SOFTWARE 70
 
 ;;
 ;; Rutina de atención del RELOJ
 ;; -------------------------------------------------------------------------- ;;
-
+global _isr32
+_isr32:
+    pusha
+    call fin_intr_pic1
+    mov eax, 32
+    ;xchg bx, bx
+    ;call screen_pintar_interrupcion
+    call game_tick
+    popa
+    iret
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;

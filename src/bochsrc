@@ -389,7 +389,7 @@ floppy_bootsig_check: disabled=0
 #   log: /dev/tty
 #=======================================================================
 #log: /dev/null
-log: /tmp/bochs.log
+log: debug.log
 
 #=======================================================================
 # LOGPREFIX:
@@ -429,7 +429,7 @@ log: /tmp/bochs.log
 # cause bochs to become unstable.  The panic is a "graceful exit," so
 # if you disable it you may get a spectacular disaster instead.
 #=======================================================================
-panic: action=ask
+panic: action=report
 error: action=report
 info: action=report
 debug: action=report

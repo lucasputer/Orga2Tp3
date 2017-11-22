@@ -27,6 +27,7 @@ uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
                                         {49,  3, 50}, {48, 38, 50}, {64, 21, 100}, {34, 21, 100}
                                     };
 
+int direcciones_fisicas_page_table[FISICAS_PTE_JUGADOR];
 jugador_t jugadorA;
 jugador_t jugadorB;
 
@@ -95,10 +96,20 @@ void game_calcular_posiciones_vistas(int *vistas_x, int *vistas_y, int x, int y)
 
 void game_inicializar()
 {
+	int paginas;
+	for(paginas = 0; paginas < FISICAS_PTE_JUGADOR; paginas ++) {
+		direcciones_fisicas_page_table[paginas] = dame_libre();
+	}
+	jugadorA.direcciones_page_tables = direcciones_fisicas_page_table;
+	jugadorB.direcciones_page_tables = direcciones_fisicas_page_table;
+	game_jugador_inicializar(&jugadorA);
+	game_jugador_inicializar(&jugadorB);
+
 }
 
 void game_jugador_inicializar_mapa(jugador_t *jug)
 {
+
 }
 
 void game_jugador_inicializar(jugador_t *j)

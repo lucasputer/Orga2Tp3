@@ -189,7 +189,7 @@ void screen_pintar_error(uint intCode, uint errorCode){
     print("Interrupcion: ",0,0,fondo_rojo_letras_blancas);
     print_dec(intCode, 3, 13, 0, fondo_rojo_letras_blancas);
     print(" Error Code: ",17,0,fondo_rojo_letras_blancas);
-    print_hex(errorCode, 3, 29, 0, fondo_rojo_letras_blancas);
+    print_hex(errorCode, 8, 29, 0, fondo_rojo_letras_blancas);
 }
 void screen_pintar_interrupcion(uint intCode){
     print("Interrupcion:",0,0,fondo_rojo_letras_blancas);

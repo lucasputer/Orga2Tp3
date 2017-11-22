@@ -137,17 +137,20 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	//para cada dir, inicializamos una entrada en el pde para que el pte quede apuntando a esa fisica.
 	//Al hacerlo asi(con las fisicas hardcodeadas) todas las tareas ven lo mismo.
 	for(i = 0; i <= FISICAS_PTE_JUGADOR; i++) {
-		mmu_inicializar_directorio(MAPA_BASE_VIRTUAL + i*PDE_MAPPING_SIZE, nuevo_cr3, 1, 1, dir_fisicas_pte_jugador[i]);
+		int virtual = MAPA_BASE_VIRTUAL + i*PDE_MAPPING_SIZE;
+		int indice = virtual >> 22;
+		mmu_inicializar_directorio(indice, nuevo_cr3, 1, 1, dir_fisicas_pte_jugador[i]);
 	}
 	//Luego en base a x,y calculamos la posicion en el mapa y llamamos a mmu_mapear_pagina.
 	//Que como ya cargamos las entradas de la pte con las mismas direcciones fisicas de todas las tareas.
 	//La tarea queda mapeada con todas las paginas ya exploradas por otras tareas
-
+	
 	//calcular la posicion en el mapa virtual
-	int dir_virtual_posicion_en_mapa = MAPA_BASE_VIRTUAL + (y * MAPA_ANCHO) + x; 
+	int dir_virtual_posicion_en_mapa = MAPA_BASE_VIRTUAL + ((y * MAPA_ANCHO) + x)*0x1000; 
 	//calcular la posicion en el mapa fisico
-	int dir_fisica_posicion_en_mapa = dir_fisicas_pte_jugador[0] + (y * MAPA_ANCHO) + x;
+	int dir_fisica_posicion_en_mapa = dir_fisicas_pte_jugador[0] + ((y * MAPA_ANCHO) + x)*0x1000;
 	//calcular las posiciones aledañas
+	
 	for(i=-1; i<2; i++) {
 		for(j=-1; j<2; j++) {
 			mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO + j))*0x1000, 1, 1);
@@ -172,10 +175,7 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 
 	//desmapeamos la pagina para que otras tareas no puedan ver el codigo de otra tarea
 	mmu_unmapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3);
-
+	
 	return nuevo_cr3;
-}
 
-int* damePosicionAledanias(int base, int x, int y) {
-	return 0;
 }
