@@ -112,7 +112,7 @@ void tss_inicializar_idle() {
 	tss_idle.ldt=0;
 	tss_idle.unused10=0;
 	tss_idle.dtrap=0;
-	tss_idle.iomap=0;
+	tss_idle.iomap=0xFFFF;
 
 	gdt[GDT_IDX_TSS_IDLE].limit_0_15 = 0x1000;
     gdt[GDT_IDX_TSS_IDLE].base_0_15 = ((unsigned int)(&tss_idle));
@@ -124,7 +124,7 @@ void tss_inicializar_idle() {
     gdt[GDT_IDX_TSS_IDLE].limit_16_19 = 0x0;
     gdt[GDT_IDX_TSS_IDLE].avl = 0x0;
     gdt[GDT_IDX_TSS_IDLE].l = 0x0;
-    gdt[GDT_IDX_TSS_IDLE].db = 0x0;
+    gdt[GDT_IDX_TSS_IDLE].db = 0x1;
     gdt[GDT_IDX_TSS_IDLE].g = 0x0;
     gdt[GDT_IDX_TSS_IDLE].base_31_24 = ((unsigned int)(&tss_idle)>>24);
  
@@ -168,14 +168,14 @@ void init_tss(tss* new_tss, int cs, int ds, int ss0) {
 	new_tss->ldt=0;
 	new_tss->unused10=0;
 	new_tss->dtrap=0;
-	new_tss->iomap=0;
+	new_tss->iomap=0xFFFF;
 
 }
 
 
 void tss_inicializar_tarea(int tarea, int jugador, int x, int y) {
 	//JUGADOR A
-	if(jugador == 1) {
+	if(jugador == 1 && cantidad_tareas_a < MAX_CANT_PIRATAS_VIVOS) {
 		int fisicas[3];
 		int i = 0;
 		for(i=0;i<3;i++){
@@ -197,22 +197,22 @@ void tss_inicializar_tarea(int tarea, int jugador, int x, int y) {
 
 void tss_inicializar_explorador_temp() {
 	int tarea = 0x10000;
-	tss tss_explorador;
+	tss* tss_explorador = &tss_jugadorA[0];
 	//CAMBIAR PARA QUE USEN EL RPL NIVEL 3. 
-	init_tss(&tss_explorador, (GDT_IDX_CODE_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3));
-	tss_explorador.esp = tarea + 0x1000;
-	tss_explorador.ebp = tarea + 0x1000;
-	tss_explorador.eip = tarea;
+	init_tss(tss_explorador, (GDT_IDX_CODE_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3) | 0x3, (GDT_IDX_DATA_0 << 3));
+	tss_explorador->esp = CODIGO_BASE + 0x1000;
+	tss_explorador->ebp = CODIGO_BASE + 0x1000;
+	tss_explorador->eip = CODIGO_BASE;
 	int fisicas[3];
 	int i = 0;
 	for(i=0;i<3;i++){
 		fisicas[i] = dame_libre();
 	}
-	tss_explorador.cr3 = mmu_inicializar_dir_pirata(1, 1, tarea, fisicas);
+	tss_explorador->cr3 = mmu_inicializar_dir_pirata(0, 0, tarea, fisicas);
 
 	gdt[GDT_IDX_TSS_EXPLORADOR].limit_0_15 = 0x1000;
-    gdt[GDT_IDX_TSS_EXPLORADOR].base_0_15 = ((unsigned int)(&tss_explorador));
-    gdt[GDT_IDX_TSS_EXPLORADOR].base_23_16 = ((unsigned int)(&tss_explorador)>>16);
+    gdt[GDT_IDX_TSS_EXPLORADOR].base_0_15 = ((unsigned int)(tss_explorador));
+    gdt[GDT_IDX_TSS_EXPLORADOR].base_23_16 = ((unsigned int)(tss_explorador)>>16);
     gdt[GDT_IDX_TSS_EXPLORADOR].type = 0x09;
     gdt[GDT_IDX_TSS_EXPLORADOR].s = 0x0;
     gdt[GDT_IDX_TSS_EXPLORADOR].dpl = 0x00;
@@ -220,7 +220,7 @@ void tss_inicializar_explorador_temp() {
     gdt[GDT_IDX_TSS_EXPLORADOR].limit_16_19 = 0x0;
     gdt[GDT_IDX_TSS_EXPLORADOR].avl = 0x0;
     gdt[GDT_IDX_TSS_EXPLORADOR].l = 0x0;
-    gdt[GDT_IDX_TSS_EXPLORADOR].db = 0x0;
+    gdt[GDT_IDX_TSS_EXPLORADOR].db = 0x1;
     gdt[GDT_IDX_TSS_EXPLORADOR].g = 0x0;
-    gdt[GDT_IDX_TSS_EXPLORADOR].base_31_24 = ((unsigned int)(&tss_explorador)>>24);
+    gdt[GDT_IDX_TSS_EXPLORADOR].base_31_24 = ((unsigned int)(tss_explorador)>>24);
 }

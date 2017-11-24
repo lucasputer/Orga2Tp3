@@ -129,18 +129,30 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	
 	int i = 0;
 	int j = 0;
-	//identitiy mapping para la seccion del kernel
-	for (i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
-		mmu_mapear_pagina(i, nuevo_cr3, i, 0, 0);
-	}
+
 	//recorremos el dir_fisicas_pte_jugador
 	//para cada dir, inicializamos una entrada en el pde para que el pte quede apuntando a esa fisica.
 	//Al hacerlo asi(con las fisicas hardcodeadas) todas las tareas ven lo mismo.
 	for(i = 0; i <= FISICAS_PTE_JUGADOR; i++) {
 		int virtual = MAPA_BASE_VIRTUAL + i*PDE_MAPPING_SIZE;
 		int indice = virtual >> 22;
-		mmu_inicializar_directorio(indice, nuevo_cr3, 1, 1, dir_fisicas_pte_jugador[i]);
+		pde* pd = ((pde*) nuevo_cr3);
+		if(pd[indice].present == 0) {
+			mmu_inicializar_directorio(indice, nuevo_cr3, 1, 1, dir_fisicas_pte_jugador[i]);
+			pte* pt = ((pte*) (pd[indice].address << 12));
+			for(j = 0; j <= 1024; j++) {
+				pt[j].present = 0;
+			}	
+		}
+		
+		
 	}
+
+		//identitiy mapping para la seccion del kernel
+	for (i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
+		mmu_mapear_pagina(i, nuevo_cr3, i, 0, 0);
+	}
+
 	//Luego en base a x,y calculamos la posicion en el mapa y llamamos a mmu_mapear_pagina.
 	//Que como ya cargamos las entradas de la pte con las mismas direcciones fisicas de todas las tareas.
 	//La tarea queda mapeada con todas las paginas ya exploradas por otras tareas
@@ -148,14 +160,17 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	//calcular la posicion en el mapa virtual
 	int dir_virtual_posicion_en_mapa = MAPA_BASE_VIRTUAL + ((y * MAPA_ANCHO) + x)*0x1000; 
 	//calcular la posicion en el mapa fisico
-	int dir_fisica_posicion_en_mapa = dir_fisicas_pte_jugador[0] + ((y * MAPA_ANCHO) + x)*0x1000;
+	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((y * MAPA_ANCHO) + x)*0x1000;
 	//calcular las posiciones aledañas
 	
 	for(i=-1; i<2; i++) {
 		for(j=-1; j<2; j++) {
-			mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO + j))*0x1000, 1, 1);
+			if( x + i >= 0 && x + i < MAPA_ALTO && y + j >= 0 && y + j < MAPA_ANCHO){
+				mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
+			}
 		}
-	}	
+	}
+
 
 	//mapeamos la virtual 0x400000 al codigo de la codigo de la tarea
 	mmu_mapear_pagina(CODIGO_BASE, nuevo_cr3, dir_fisica_posicion_en_mapa, 1, 1);

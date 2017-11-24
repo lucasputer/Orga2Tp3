@@ -11,6 +11,9 @@ BITS 32
 sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
 
+lanzar_jugadorA: dw 0xAA
+lanzar_jugadorB: dw 0xB6
+
 ;; PIC
 extern fin_intr_pic1
 
@@ -21,6 +24,7 @@ extern sched_tarea_actual
 extern screen_pintar_error
 extern screen_pintar_interrupcion
 extern screen_pintar_tecla
+extern sched_tick
 extern game_tick
 
 ;;
@@ -61,9 +65,25 @@ _isr%1:
     call fin_intr_pic1
     xor eax, eax
     in al, 0x60
+
+    cmp eax, lanzar_jugadorA
+    je .lanzar_exploradorA
+
+    cmp eax, lanzar_jugadorB
+    je .lanzar_exploradorB
+
     push eax
     call screen_pintar_tecla
     pop eax
+    jmp .fin_teclado
+
+    .lanzar_exploradorA:
+    jmp .fin_teclado
+
+    .lanzar_exploradorB:
+    jmp .fin_teclado
+
+    .fin_teclado:
     popa
     iret
 
@@ -129,10 +149,21 @@ global _isr32
 _isr32:
     pusha
     call fin_intr_pic1
-    mov eax, 32
+    ;mov eax, 32
     ;xchg bx, bx
     ;call screen_pintar_interrupcion
+    
+    ; call sched_tick
     call game_tick
+
+    ; str cx
+    ; cmp ax, cx
+    ; je .fin_isr32
+    ; mov [sched_tarea_selector], ax
+    ; jmp far [sched_tarea_offset]
+
+    .fin_isr32:
+
     popa
     iret
 ;;

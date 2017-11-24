@@ -43,6 +43,37 @@ void screen_actualizar_reloj_global()
     screen_pintar(reloj[reloj_global], C_BW, 49, 79);
 }
 
+void screen_actualizar_reloj_pirata(uint id_pirata)
+{
+    if(id_pirata != NULL){
+        static uint reloj_pirata = 0;
+        reloj_pirata = (reloj_pirata + 1) % reloj_size;
+        char c = reloj[reloj_pirata];
+        if(id_pirata <= 8){
+            screen_pintar_reloj_pirata(c, ROJO, id_pirata);
+        }else{
+            id_pirata =- 8;
+            screen_pintar_reloj_pirata(c, AZUL, id_pirata);
+        }
+    }
+}
+
+
+void screen_pintar_reloj_pirata(char c, equipo eq, int posicion){
+    int fila = 48;
+    int color = fondo_negro;
+    int columna = 0;
+    int offset = (posicion - 1)*2;
+    if(eq == ROJO){
+        color = color | texto_rojo;
+        columna = 3 + offset;
+    }else{
+        color = color | texto_azul;
+        columna = 60 + offset;
+    }
+    screen_pintar(c,color,fila,columna);
+}
+
 void screen_pintar(uchar c, uchar color, uint fila, uint columna)
 {
     p[fila][columna].c = c;
@@ -104,19 +135,7 @@ void  screen_pintar_relojes(){
 }
 
 void screen_pintar_lugar_disponible(equipo eq, int posicion){
-    int fila = 48;
-    int color = fondo_negro;
-    int columna = 0;
-    int offset = (posicion - 1)*2;
-    if(eq == ROJO){
-        color = color | texto_rojo;
-        columna = 3 + offset;
-    }else{
-        color = color | texto_azul;
-        columna = 60 + offset;
-    }
-    char * c = "X ";
-    print(c,columna,fila,color);
+    screen_pintar_reloj_pirata('X',eq,posicion);
 }
 
 void screen_pintar_puntajes(){

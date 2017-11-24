@@ -110,7 +110,6 @@ gdt_entry gdt[GDT_COUNT] = {
     }
 
 };
-
 gdt_descriptor GDT_DESC = {
     sizeof(gdt) - 1,
     (unsigned int) &gdt

@@ -128,6 +128,7 @@ void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id
 void game_tick(uint id_pirata)
 {
 	screen_actualizar_reloj_global();
+	screen_actualizar_reloj_pirata(id_pirata);
 }
 
 
