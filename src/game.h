@@ -26,6 +26,7 @@ typedef struct pirata_t
 {
     uint index;
     struct jugador_t *jugador;
+    uint es_explorador;
 
     // id unica, posicion, tipo, reloj
 } pirata_t;
@@ -36,6 +37,9 @@ typedef struct jugador_t
     uint index;
     pirata_t piratas[MAX_CANT_PIRATAS_VIVOS];
     int* direcciones_page_tables;
+    int x_puerto;
+    int y_puerto;
+    int puntos;
     // coordenadas puerto, posiciones exploradas, mineros pendientes, etc
 } jugador_t;
 

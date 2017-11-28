@@ -27,7 +27,6 @@ uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
                                         {49,  3, 50}, {48, 38, 50}, {64, 21, 100}, {34, 21, 100}
                                     };
 
-int direcciones_fisicas_page_table[FISICAS_PTE_JUGADOR];
 jugador_t jugadorA;
 jugador_t jugadorB;
 
@@ -97,11 +96,14 @@ void game_calcular_posiciones_vistas(int *vistas_x, int *vistas_y, int x, int y)
 void game_inicializar()
 {
 	int paginas;
+	int direcciones_fisicas_page_table_A[FISICAS_PTE_JUGADOR];
+	int direcciones_fisicas_page_table_B[FISICAS_PTE_JUGADOR];
 	for(paginas = 0; paginas < FISICAS_PTE_JUGADOR; paginas ++) {
-		direcciones_fisicas_page_table[paginas] = dame_libre();
+		direcciones_fisicas_page_table_A[paginas] = dame_libre();
+		direcciones_fisicas_page_table_B[paginas] = dame_libre();
 	}
-	jugadorA.direcciones_page_tables = direcciones_fisicas_page_table;
-	jugadorB.direcciones_page_tables = direcciones_fisicas_page_table;
+	jugadorA.direcciones_page_tables = direcciones_fisicas_page_table_A;
+	jugadorB.direcciones_page_tables = direcciones_fisicas_page_table_B;
 	game_jugador_inicializar(&jugadorA);
 	game_jugador_inicializar(&jugadorB);
 
@@ -117,7 +119,15 @@ void game_jugador_inicializar(jugador_t *j)
 	static int index = 0;
 
 	j->index = index++;
-    // ~ completar ~
+	j->puntos = 0;
+    
+    if(index == 0){
+    	j->x_puerto = POS_INIT_A_X;
+    	j->y_puerto = POS_INIT_A_Y;
+    }else{
+    	j->x_puerto = POS_INIT_B_X;
+    	j->y_puerto = POS_INIT_B_Y;
+    }
 
 }
 

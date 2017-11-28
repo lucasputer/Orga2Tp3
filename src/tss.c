@@ -16,6 +16,8 @@ tss tss_jugadorB[MAX_CANT_PIRATAS_VIVOS];
 int cantidad_tareas_a = 0;
 int cantidad_tareas_b = 0;
 
+int fisicas[3];
+
 void tss_inicializar() {
 
 	tss_inicial.ptl=0;
@@ -133,7 +135,7 @@ void tss_inicializar_idle() {
 void init_tss(tss* new_tss, int cs, int ds, int ss0) {
 	new_tss->ptl=0;
 	new_tss->unused0=0;
-	new_tss->esp0=dame_libre();
+	new_tss->esp0=dame_libre() + 0x1000;
 	new_tss->ss0=ss0;
 	new_tss->unused1=0;
 	new_tss->esp1=0;
@@ -168,31 +170,52 @@ void init_tss(tss* new_tss, int cs, int ds, int ss0) {
 	new_tss->ldt=0;
 	new_tss->unused10=0;
 	new_tss->dtrap=0;
-	new_tss->iomap=0xFFFF;
+	new_tss->iomap=0;
 
 }
 
 
-void tss_inicializar_tarea(int tarea, int jugador, int x, int y) {
-	//JUGADOR A
-	if(jugador == 1 && cantidad_tareas_a < MAX_CANT_PIRATAS_VIVOS) {
-		int fisicas[3];
-		int i = 0;
-		for(i=0;i<3;i++){
-			fisicas[i] = dame_libre();
-		}
-		int t_pd = mmu_inicializar_dir_pirata(x, y, tarea, fisicas);
-		//mmu_mapear_pagina(0x101000, t_pd, dame_proxima_libre())
-		tss tss_act = tss_jugadorA[cantidad_tareas_a];
-		init_tss(&tss_act, 0x48,0x58,0x50);
-		tss_act.esp = tarea + 0xfff;
-		tss_act.ebp = tarea + 0xfff;
-		tss_act.eip = tarea;
-		tss_act.cr3 = t_pd;
-		cantidad_tareas_a++;
-	} else {
-		//JUGADOR B
+void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pirata){
+	int tarea =  0x10000; //la primer tarea esta en esa posicion
+	if(jugador.index == 1){
+		tarea += 0x2000; //donde se encuentra la primer tarea del jugador b
 	}
+	if(tipo == 1){
+		tarea += 0x1000; //si es minero es la siguiente tarea
+	}
+	tss* tss_pirata;
+	if(jugador.index == 0){
+		tss_pirata = &tss_jugadorA[index];
+	}else{
+		tss_pirata = &tss_jugadorB[index];
+	}
+	init_tss(tss_pirata, (GDT_IDX_CODE_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3) | 0x3, (GDT_IDX_DATA_0 << 3));
+	tss_pirata->esp = CODIGO_BASE + 0x1000;
+	tss_pirata->ebp = CODIGO_BASE + 0x1000;
+	tss_pirata->eip = CODIGO_BASE;
+
+	tss_pirata->cr3 = mmu_inicializar_dir_pirata(0, 0, tarea, jugador.direcciones_page_tables);
+
+	//to do
+	int gdt_index = 15; //la primera posicion de la gdt con entrada para tareas
+	if(jugador.index == 1){
+		gdt_index += 8; //donde se encuentran las tareas del jugador b
+	}
+	gdt_index += pirata.index; //el indice nos da el desplazamiento
+
+	gdt[gdt_index].limit_0_15 = 0x1000;
+    gdt[gdt_index].base_0_15 = ((unsigned int)(tss_pirata));
+    gdt[gdt_index].base_23_16 = ((unsigned int)(tss_pirata)>>16);
+    gdt[gdt_index].type = 0x09;
+    gdt[gdt_index].s = 0x0;
+    gdt[gdt_index].dpl = 0x00;
+    gdt[gdt_index].p = 0x1;
+    gdt[gdt_index].limit_16_19 = 0x0;
+    gdt[gdt_index].avl = 0x0;
+    gdt[gdt_index].l = 0x0;
+    gdt[gdt_index].db = 0x1;
+    gdt[gdt_index].g = 0x0;
+    gdt[gdt_index].base_31_24 = ((unsigned int)(tss_pirata)>>24);
 }
 
 void tss_inicializar_explorador_temp() {
@@ -203,12 +226,11 @@ void tss_inicializar_explorador_temp() {
 	tss_explorador->esp = CODIGO_BASE + 0x1000;
 	tss_explorador->ebp = CODIGO_BASE + 0x1000;
 	tss_explorador->eip = CODIGO_BASE;
-	int fisicas[3];
 	int i = 0;
 	for(i=0;i<3;i++){
 		fisicas[i] = dame_libre();
 	}
-	tss_explorador->cr3 = mmu_inicializar_dir_pirata(0, 0, tarea, fisicas);
+	tss_explorador->cr3 = mmu_inicializar_dir_pirata(1, 1, tarea, fisicas);
 
 	gdt[GDT_IDX_TSS_EXPLORADOR].limit_0_15 = 0x1000;
     gdt[GDT_IDX_TSS_EXPLORADOR].base_0_15 = ((unsigned int)(tss_explorador));

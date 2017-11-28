@@ -25,7 +25,9 @@ extern screen_pintar_error
 extern screen_pintar_interrupcion
 extern screen_pintar_tecla
 extern sched_tick
+extern sched_jugador_actual
 extern game_tick
+extern game_jugador_erigir_pirata
 
 ;;
 ;; Definición de MACROS
@@ -67,20 +69,21 @@ _isr%1:
     in al, 0x60
 
     cmp eax, lanzar_jugadorA
-    je .lanzar_exploradorA
+    je .lanzar_explorador
 
     cmp eax, lanzar_jugadorB
-    je .lanzar_exploradorB
+    je .lanzar_explorador
 
     push eax
     call screen_pintar_tecla
     pop eax
     jmp .fin_teclado
 
-    .lanzar_exploradorA:
-    jmp .fin_teclado
-
-    .lanzar_exploradorB:
+    .lanzar_explorador:
+    call sched_jugador_actual
+    push eax
+    push 0
+    call game_jugador_erigir_pirata
     jmp .fin_teclado
 
     .fin_teclado:

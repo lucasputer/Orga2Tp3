@@ -189,7 +189,7 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	}
 
 	//desmapeamos la pagina para que otras tareas no puedan ver el codigo de otra tarea
-	mmu_unmapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3);
+	//mmu_unmapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3);
 	
 	return nuevo_cr3;
 

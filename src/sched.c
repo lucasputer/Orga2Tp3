@@ -29,6 +29,14 @@ uint sched_tick(){
 	return  proxima;
 }
 
+jugador_t sched_jugador_actual(){
+	if(jugador_actual_es_jugadorA){
+		return jugadorA;
+	}else{
+		return jugadorB;
+	}
+}
+
 uint sched_proxima_a_ejecutar(){
 	uint * tareas_jugador;
 	uint pos, pos_inicial;

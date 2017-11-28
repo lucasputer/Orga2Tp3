@@ -25,4 +25,5 @@ uint indice_tarea_actual;
 uint sched_tick();
 uint sched_proxima_a_ejecutar();
 void sched_inicializar();
+jugador_t sched_jugador_actual();
 #endif	/* !__SCHED_H__ */
