@@ -68,4 +68,5 @@ void idt_inicializar() {
     IDT_ENTRY(32);
     IDT_ENTRY(33);
     IDT_ENTRY(70);
+    idt[70].attr = 0xEE00;
 }

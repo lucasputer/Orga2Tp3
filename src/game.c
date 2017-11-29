@@ -170,7 +170,11 @@ void game_explorar_posicion(jugador_t *jugador, int c, int f)
 
 uint game_syscall_pirata_mover(uint id, direccion dir)
 {
-    // ~ completar
+	int x = 0;
+	int y = 0;
+	game_dir2xy(dir, &x, &y);
+    print_dec(x, 2, 13, 20, 0x47);
+    print_dec(y, 2, 23, 20, 0x47);
     return 0;
 }
 

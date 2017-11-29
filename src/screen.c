@@ -81,9 +81,10 @@ void screen_pintar(uchar c, uchar color, uint fila, uint columna)
 }
 
 void screen_pintar_rect(uchar c, uchar color, int fila, int columna, int alto, int ancho)
-{   
-    for(int row = fila; row < fila + alto; row++){
-        for (int col = columna; col < columna + ancho; col++){
+{      
+    int row, col;
+    for(row = fila; row < fila + alto; row++){
+        for (col = columna; col < columna + ancho; col++){
             p[row][col].c = c;
             p[row][col].a = color;
         }
@@ -118,7 +119,8 @@ void screen_inicializar()
     screen_pintar_puntajes();
     screen_pintar_relojes();
     //lugares disponibles;
-    for(int i = 1; i < 9; i++){
+    int i;
+    for(i = 1; i < 9; i++){
         screen_pintar_lugar_disponible(ROJO, i);
         screen_pintar_lugar_disponible(AZUL, i);
     }
@@ -209,6 +211,7 @@ void screen_pintar_error(uint intCode, uint errorCode){
     print_dec(intCode, 3, 13, 0, fondo_rojo_letras_blancas);
     print(" Error Code: ",17,0,fondo_rojo_letras_blancas);
     print_hex(errorCode, 8, 29, 0, fondo_rojo_letras_blancas);
+    
 }
 void screen_pintar_interrupcion(uint intCode){
     print("Interrupcion:",0,0,fondo_rojo_letras_blancas);

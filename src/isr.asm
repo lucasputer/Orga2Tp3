@@ -28,6 +28,7 @@ extern sched_tick
 extern sched_jugador_actual
 extern game_tick
 extern game_jugador_erigir_pirata
+extern game_syscall_pirata_mover
 
 ;;
 ;; Definición de MACROS
@@ -58,7 +59,33 @@ _isr%1:
 
 %endmacro
 
+;;
+;; Rutina de atención del RELOJ
+;; -------------------------------------------------------------------------- ;;
+global _isr32
+_isr32:
+    pusha
+    call fin_intr_pic1
+    ;mov eax, 32
+    ;xchg bx, bx
+    ;call screen_pintar_interrupcion
+    
+    ; call sched_tick
+    call game_tick
 
+    ; str cx
+    ; cmp ax, cx
+    ; je .fin_isr32
+    ; mov [sched_tarea_selector], ax
+    ; jmp far [sched_tarea_offset]
+
+    .fin_isr32:
+
+    popa
+    iret
+;;
+;; Rutina de atención del TECLADO
+;; -------------------------------------------------------------------------- ;;
 %macro ISR_TECLADO 1
 global _isr%1
 
@@ -91,15 +118,17 @@ _isr%1:
     iret
 
 %endmacro
-
+;;
+;; Rutinas de atención de las SYSCALLS
+;; -------------------------------------------------------------------------- ;;
 %macro ISR_SOFTWARE 1
 global _isr%1
 
 _isr%1:
+    xchg bx, bx
     pusha
-    call fin_intr_pic1
     ;call screen_pintar_tecla
-    popa
+    
     cmp eax, 1
     je .moverse
     cmp eax, 2
@@ -108,12 +137,18 @@ _isr%1:
     je .posicion
 
     .moverse:
+        call sched_jugador_actual
+        push ecx ; para enviar a la funcion
+        push eax ; para enviar a la funcion
+        call game_syscall_pirata_mover
+        add esp, 8
     .cavar:
     .posicion:
-        
+    popa    
     iret
 
 %endmacro
+
 ;;
 ;; Datos
 ;; -------------------------------------------------------------------------- ;;
@@ -145,36 +180,5 @@ ISR 19
 ISR_TECLADO 33
 ISR_SOFTWARE 70
 
-;;
-;; Rutina de atención del RELOJ
-;; -------------------------------------------------------------------------- ;;
-global _isr32
-_isr32:
-    pusha
-    call fin_intr_pic1
-    ;mov eax, 32
-    ;xchg bx, bx
-    ;call screen_pintar_interrupcion
-    
-    ; call sched_tick
-    call game_tick
-
-    ; str cx
-    ; cmp ax, cx
-    ; je .fin_isr32
-    ; mov [sched_tarea_selector], ax
-    ; jmp far [sched_tarea_offset]
-
-    .fin_isr32:
-
-    popa
-    iret
-;;
-;; Rutina de atención del TECLADO
-;; -------------------------------------------------------------------------- ;;
-
-;;
-;; Rutinas de atención de las SYSCALLS
-;; -------------------------------------------------------------------------- ;;
 
 

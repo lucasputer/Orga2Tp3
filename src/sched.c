@@ -14,8 +14,8 @@ void sched_inicializar(){
 	ultimo_jugadorA = MAX_CANT_PIRATAS_VIVOS;
 	ultimo_jugadorB = MAX_CANT_PIRATAS_VIVOS;
 	jugador_actual_es_jugadorA = 1;
-
-	for(int i = 0; i < MAX_CANT_PIRATAS_VIVOS; i ++){
+	int i;
+	for(i = 0; i < MAX_CANT_PIRATAS_VIVOS; i ++){
 		tareas_jugadorA[i] = 0;
 		tareas_jugadorB[i] = 0;
 	}
@@ -29,12 +29,9 @@ uint sched_tick(){
 	return  proxima;
 }
 
-jugador_t sched_jugador_actual(){
-	if(jugador_actual_es_jugadorA){
-		return jugadorA;
-	}else{
-		return jugadorB;
-	}
+uint sched_jugador_actual(){
+	return 1;
+	//USAR RTR PARA CALCULAR EN BASE AL TASK REGISTER CARGADO CUAL ES EL ID DEL JUGADOR A DEVOLVER
 }
 
 uint sched_proxima_a_ejecutar(){

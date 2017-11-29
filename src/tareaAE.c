@@ -11,9 +11,10 @@
 
 void task(int x, int y) {
     /* Tarea */
+    
     int restantex = MAPA_ANCHO-3;
     int restantey = MAPA_ALTO-3;
-
+    
     while(1)
     {
         int i;
@@ -37,6 +38,6 @@ void task(int x, int y) {
 
         restantey = restantey - 3;
     }
-
+    
     while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
 }

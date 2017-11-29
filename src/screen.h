@@ -37,6 +37,7 @@ int ee_printf(const char *fmt, ...);
 void screen_pintar(unsigned char c, unsigned char color, uint fila, uint columna);
 void print(const char * text, unsigned int x, unsigned int y, unsigned short attr);
 void print_hex(unsigned int numero, int size, unsigned int x, unsigned int y, unsigned short attr);
+void print_dec(unsigned int numero, int size, unsigned int x, unsigned int y, unsigned short attr);
 void screen_pintar_rect(unsigned char c, unsigned char color, int fila, int columna, int alto, int ancho);
 void screen_pintar_linea_h(unsigned char c, unsigned char color, int fila, int columna, int ancho);
 void screen_pintar_linea_v(unsigned char c, unsigned char color, int fila, int columna, int alto);
@@ -68,3 +69,4 @@ void screen_stop_game_show_winner(jugador_t *j);
 
 
 #endif  /* !__SCREEN_H__ */
+
