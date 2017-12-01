@@ -45,19 +45,16 @@ void screen_actualizar_reloj_global()
 }
 
 void screen_actualizar_reloj_pirata(uint id_pirata)
-{
-    screen_pintar_interrupcion(id_pirata);
-    if(id_pirata != SCHED_SIN_TAREAS){
-        id_pirata = id_pirata - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A + 1;
-        static uint reloj_pirata = 0;
-        reloj_pirata = (reloj_pirata + 1) % reloj_size;
-        char c = reloj[reloj_pirata];
-        if(id_pirata <= 8){
-            screen_pintar_reloj_pirata(c, ROJO, id_pirata);
-        }else{
-            id_pirata =- 8;
-            screen_pintar_reloj_pirata(c, AZUL, id_pirata);
-        }
+{   
+    id_pirata = id_pirata - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A + 1;
+    static uint reloj_pirata = 0;
+    reloj_pirata = (reloj_pirata + 1) % reloj_size;
+    char c = reloj[reloj_pirata];
+    if(id_pirata <= 8){
+        screen_pintar_reloj_pirata(c, ROJO, id_pirata);
+    }else{
+        id_pirata -= 8;
+        screen_pintar_reloj_pirata(c, AZUL, id_pirata);
     }
 }
 
