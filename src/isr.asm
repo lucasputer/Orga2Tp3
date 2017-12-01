@@ -11,8 +11,8 @@ BITS 32
 sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
 
-%define lanzar_jugadorA 0xB6
-%define lanzar_jugadorB 0xAA
+%define lanzar_jugadorA 0xAA
+%define lanzar_jugadorB 0xB6
 
 ;; PIC
 extern fin_intr_pic1
@@ -64,7 +64,7 @@ _isr%1:
 ;; -------------------------------------------------------------------------- ;;
 global _isr32
 _isr32:
-    pusha
+    pushad
     call fin_intr_pic1
     ;mov eax, 32
     ;call screen_pintar_interrupcion
@@ -79,7 +79,7 @@ _isr32:
 
     .fin_isr32:
 
-    popa
+    popad
     iret
 ;;
 ;; Rutina de atención del TECLADO

@@ -212,9 +212,6 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pi
     gdt[gdt_index].db = 0x1;
     gdt[gdt_index].g = 0x0;
     gdt[gdt_index].base_31_24 = ((unsigned int)(tss_pirata)>>24);
-
-    	asm ("xchg %bx, %bx");
-
 }
 
 void tss_inicializar_explorador_temp() {
