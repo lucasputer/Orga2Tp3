@@ -15,7 +15,7 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 	//se inicializan fuera de rango, para mostrar que no hay ninguna tarea.
 	ultimo_jugadorA = MAX_CANT_PIRATAS_VIVOS;
 	ultimo_jugadorB = MAX_CANT_PIRATAS_VIVOS;
-	jugador_actual = 1;
+	jugador_actual = 0;
 	
 	indice_tarea_actual = SCHED_SIN_TAREAS;
 

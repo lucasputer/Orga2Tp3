@@ -32,6 +32,7 @@ jugador_t jugadorA;
 jugador_t jugadorB;
 
 
+
 void* error()
 {
 	__asm__ ("int3");
@@ -120,7 +121,7 @@ void game_jugador_inicializar(jugador_t *j)
 {
 	static int index = 0;
 
-	j->index = index++;
+	j->index = index;
 	j->puntos = 0;
     
     if(index == 0){
@@ -135,6 +136,7 @@ void game_jugador_inicializar(jugador_t *j)
     	j->piratas[i].esta_vivo = 0;
     }
 
+    index++;
 }
 
 void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id, uint tipo)
@@ -185,16 +187,31 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	if(!found)
 		return;
 
+	uchar color = C_FG_WHITE;
 	uint id = i;
 	if(j == 1){
+		color = color | C_BG_GREEN;
 		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
 	}else{
+		color = color | C_BG_CYAN;
 		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
 	}
 
 	game_pirata_inicializar(&(jugador->piratas[i]), jugador, i, id, tipo);
 	//lanzar la tarea
 	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
+
+	char exp = ' ';
+	if(tipo == 0){
+		exp = 'E';
+	}else{
+		exp = 'M';
+	}
+
+	    print_dec(jugador->piratas[i].x, 2, 13, 20, 0x47);
+	    print_dec(jugador->piratas[i].y, 2, 23, 20, 0x47);
+
+	screen_pintar(exp, color, jugador->piratas[i].y, jugador->piratas[i].x);
 
 	sched_inicializar_jugador(j);
 }
@@ -211,11 +228,11 @@ void game_explorar_posicion(jugador_t *jugador, int c, int f)
 
 uint game_syscall_pirata_mover(uint id, direccion dir)
 {
-	int x = 0;
-	int y = 0;
-	game_dir2xy(dir, &x, &y);
-    print_dec(x, 2, 13, 20, 0x47);
-    print_dec(y, 2, 23, 20, 0x47);
+	// int x = 0;
+	// int y = 0;
+	// game_dir2xy(dir, &x, &y);
+ //    print_dec(x, 2, 13, 20, 0x47);
+ //    print_dec(y, 2, 23, 20, 0x47);
     return 0;
 }
 
