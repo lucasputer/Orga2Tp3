@@ -17,7 +17,7 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 	ultimo_jugadorB = MAX_CANT_PIRATAS_VIVOS;
 	jugador_actual = 1;
 	
-	indice_tarea_actual = -1;
+	indice_tarea_actual = SCHED_SIN_TAREAS;
 
 	jugador_a = j_a;
 	jugador_b = j_b;
@@ -25,6 +25,7 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 
 uint sched_tick(){
 	uint proxima = sched_proxima_a_ejecutar();
+	indice_tarea_actual = proxima >> 3;
 	game_tick(indice_tarea_actual);
 	return  proxima;
 }
@@ -80,6 +81,12 @@ uint sched_proxima_a_ejecutar(){
 		while(pos < pos_inicial &&  tareas_jugador[pos].esta_vivo == 0){
 			pos++;
 		}
+	}
+
+	if(jugador_actual == 0){
+		ultimo_jugadorA = pos;
+	}else{
+		ultimo_jugadorB = pos;
 	}
 
 	return tareas_jugador[pos].id << 3;

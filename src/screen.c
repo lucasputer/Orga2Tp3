@@ -7,6 +7,7 @@ definicion de funciones del scheduler
 
 #include "screen.h"
 #include "game.h"
+#include "i386.h"
 
 
 extern jugador_t jugadorA, jugadorB;
@@ -45,7 +46,9 @@ void screen_actualizar_reloj_global()
 
 void screen_actualizar_reloj_pirata(uint id_pirata)
 {
-    if(id_pirata != NULL){
+    screen_pintar_interrupcion(id_pirata);
+    if(id_pirata != SCHED_SIN_TAREAS){
+        id_pirata = id_pirata - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A + 1;
         static uint reloj_pirata = 0;
         reloj_pirata = (reloj_pirata + 1) % reloj_size;
         char c = reloj[reloj_pirata];

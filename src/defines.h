@@ -45,6 +45,8 @@ typedef unsigned int   uint;
 #define GDT_IDX_TSS_EXPLORADOR		15
 
 
+#define SCHED_SIN_TAREAS 1001
+
 /* Offsets en la gdt */
 /* -------------------------------------------------------------------------- */
 #define GDT_OFF_NULL_DESC           (GDT_IDX_NULL_DESC      << 3)
