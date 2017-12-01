@@ -17,6 +17,7 @@ extern tss_inicializar
 extern tss_inicializar_idle
 extern tss_inicializar_explorador_temp
 extern mmu_inicializar_dir_pirata
+extern game_inicializar
 
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
@@ -120,7 +121,7 @@ start:
     call tss_inicializar
     ; Inicializar tss de la tarea Idle
     call tss_inicializar_idle
-    call tss_inicializar_explorador_temp
+    ;call tss_inicializar_explorador_temp
     
     ; Inicializar el scheduler
     
@@ -137,8 +138,9 @@ start:
     ; Habilitar interrupciones
     sti
     ; Saltar a la primera tarea: Idle
-    xchg bx, bx
-    jmp 0x0078:0
+
+    call game_inicializar
+    jmp 0x0070:0
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF
     mov ebx, 0xFFFF

@@ -62,4 +62,5 @@ tss tss_idle;
 void tss_inicializar();
 void tss_inicializar_idle();
 void tss_inicializar_tarea(int tarea, int jugador, int x, int y);
+void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pirata);
 #endif  /* !__TSS_H__ */

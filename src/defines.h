@@ -40,7 +40,9 @@ typedef unsigned int   uint;
 #define GDT_IDX_VIDEO               12 // 0110 0000  == 0x0060 
 #define GDT_IDX_TSS_INIT			13	//01101000 = 0110 1000 = 0X0068
 #define GDT_IDX_TSS_IDLE			14  // 01110000 = 0111 0000 = 0X0070        
-#define GDT_IDX_TSS_EXPLORADOR      15  //1111 000 =  0111 1000 = 0X0078
+#define GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A      15  //1111 000 =  0111 1000 = 0X0078
+#define GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B      23  // 1011 1000 = 0X00B8
+#define GDT_IDX_TSS_EXPLORADOR		15
 
 
 /* Offsets en la gdt */

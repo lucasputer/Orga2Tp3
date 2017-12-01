@@ -194,14 +194,10 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pi
 	tss_pirata->ebp = CODIGO_BASE + 0x1000;
 	tss_pirata->eip = CODIGO_BASE;
 
-	tss_pirata->cr3 = mmu_inicializar_dir_pirata(0, 0, tarea, jugador.direcciones_page_tables);
+	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador.direcciones_page_tables);
 
-	//to do
-	int gdt_index = 15; //la primera posicion de la gdt con entrada para tareas
-	if(jugador.index == 1){
-		gdt_index += 8; //donde se encuentran las tareas del jugador b
-	}
-	gdt_index += pirata.index; //el indice nos da el desplazamiento
+
+	uint gdt_index = pirata.id;
 
 	gdt[gdt_index].limit_0_15 = 0x1000;
     gdt[gdt_index].base_0_15 = ((unsigned int)(tss_pirata));
@@ -216,6 +212,9 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pi
     gdt[gdt_index].db = 0x1;
     gdt[gdt_index].g = 0x0;
     gdt[gdt_index].base_31_24 = ((unsigned int)(tss_pirata)>>24);
+
+    	asm ("xchg %bx, %bx");
+
 }
 
 void tss_inicializar_explorador_temp() {

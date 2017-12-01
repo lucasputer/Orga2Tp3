@@ -7,6 +7,7 @@
 
 #include "mmu.h"
 #include "i386.h"
+#include "screen.h"
 /* Atributos paginas */
 int primera_pagina_libre;
 
@@ -133,14 +134,14 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	//recorremos el dir_fisicas_pte_jugador
 	//para cada dir, inicializamos una entrada en el pde para que el pte quede apuntando a esa fisica.
 	//Al hacerlo asi(con las fisicas hardcodeadas) todas las tareas ven lo mismo.
-	for(i = 0; i <= FISICAS_PTE_JUGADOR; i++) {
+	for(i = 0; i < FISICAS_PTE_JUGADOR; i++) {
 		int virtual = MAPA_BASE_VIRTUAL + i*PDE_MAPPING_SIZE;
 		int indice = virtual >> 22;
 		pde* pd = ((pde*) nuevo_cr3);
 		if(pd[indice].present == 0) {
 			mmu_inicializar_directorio(indice, nuevo_cr3, 1, 1, dir_fisicas_pte_jugador[i]);
 			pte* pt = ((pte*) (pd[indice].address << 12));
-			for(j = 0; j <= 1024; j++) {
+			for(j = 0; j < 1024; j++) {
 				pt[j].present = 0;
 			}	
 		}
@@ -152,25 +153,23 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	for (i = 0; i <= MEMORY_LIMIT; i += 0x1000) {
 		mmu_mapear_pagina(i, nuevo_cr3, i, 0, 0);
 	}
-
 	//Luego en base a x,y calculamos la posicion en el mapa y llamamos a mmu_mapear_pagina.
 	//Que como ya cargamos las entradas de la pte con las mismas direcciones fisicas de todas las tareas.
 	//La tarea queda mapeada con todas las paginas ya exploradas por otras tareas
-	
+
 	//calcular la posicion en el mapa virtual
 	int dir_virtual_posicion_en_mapa = MAPA_BASE_VIRTUAL + ((y * MAPA_ANCHO) + x)*0x1000; 
 	//calcular la posicion en el mapa fisico
 	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((y * MAPA_ANCHO) + x)*0x1000;
 	//calcular las posiciones aledañas
-	
+
 	for(i=-1; i<2; i++) {
 		for(j=-1; j<2; j++) {
-			if( x + i >= 0 && x + i < MAPA_ALTO && y + j >= 0 && y + j < MAPA_ANCHO){
+			if( x + i >= 0 && x + i < MAPA_ANCHO && y + j >= 0 && y + j < MAPA_ALTO){
 				mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
 			}
 		}
 	}
-
 
 	//mapeamos la virtual 0x400000 al codigo de la codigo de la tarea
 	mmu_mapear_pagina(CODIGO_BASE, nuevo_cr3, dir_fisica_posicion_en_mapa, 1, 1);
@@ -179,52 +178,17 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	//Recupero el cr3 actual para mapearle una virtual a
 	unsigned int actual_cr3 = rcr3();
 
-	//este mapeo deberia ser una posicion hardcodeada mas grande que todo el especio de memoria del so para evitar colisiones
-	//Esto genera que el c3 actual conozca la direccion fisica donde copiar el codigo de la tarea
-	mmu_mapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
-	
-	//copiando el codigo de la tarea
-	for(i = 0; i < 0x400; i += 1){
-		((int*)DIR_VIRTUAL_COPIAR_CODIGO_TAREA)[i] = ((int*)posicion_codigo)[i];
-	}
-
-	//desmapeamos la pagina para que otras tareas no puedan ver el codigo de otra tarea
-	mmu_unmapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3);
-	
-	return nuevo_cr3;
-
-}
-
-
-void mmu_mover_tarea(int x, int y, int posicion_codigo) {
-	//Recupero el cr3 actual para mapearle una virtual
-	unsigned int actual_cr3 = rcr3();
-
-	//Desmapeo el codigo de la tarea de la posicion actual
-	mmu_unmapear_pagina(CODIGO_BASE, actual_cr3);
-
-	//calculo la nueva posicion
-	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((y * MAPA_ANCHO) + x)*0x1000;
-
-	//mapeamos la virtual 0x400000 al codigo de la tarea
-	mmu_mapear_pagina(CODIGO_BASE, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
 
 	//este mapeo deberia ser una posicion hardcodeada mas grande que todo el especio de memoria del so para evitar colisiones
 	//Esto genera que el c3 actual conozca la direccion fisica donde copiar el codigo de la tarea
 	mmu_mapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
-	
 	//copiando el codigo de la tarea
-	int i;
 	for(i = 0; i < 0x400; i += 1){
 		((int*)DIR_VIRTUAL_COPIAR_CODIGO_TAREA)[i] = ((int*)posicion_codigo)[i];
 	}
 	//desmapeamos la pagina para que otras tareas no puedan ver el codigo de otra tarea
 	mmu_unmapear_pagina(DIR_VIRTUAL_COPIAR_CODIGO_TAREA, actual_cr3);
-
-}
-
-void mmu_explorar(int x, int y) {
-	//Recupero el cr3 actual para mapearle una virtual
-	//unsigned int actual_cr3 = rcr3();
+	
+	return nuevo_cr3;
 
 }

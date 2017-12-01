@@ -11,8 +11,8 @@ BITS 32
 sched_tarea_offset:     dd 0x00
 sched_tarea_selector:   dw 0x00
 
-lanzar_jugadorA: dw 0xAA
-lanzar_jugadorB: dw 0xB6
+%define lanzar_jugadorA 0xB6
+%define lanzar_jugadorB 0xAA
 
 ;; PIC
 extern fin_intr_pic1
@@ -27,7 +27,7 @@ extern screen_pintar_tecla
 extern sched_tick
 extern sched_jugador_actual
 extern game_tick
-extern game_jugador_erigir_pirata
+extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
 
 ;;
@@ -67,17 +67,15 @@ _isr32:
     pusha
     call fin_intr_pic1
     ;mov eax, 32
-    ;xchg bx, bx
     ;call screen_pintar_interrupcion
     
-    ; call sched_tick
-    call game_tick
-
-    ; str cx
-    ; cmp ax, cx
-    ; je .fin_isr32
-    ; mov [sched_tarea_selector], ax
-    ; jmp far [sched_tarea_offset]
+    call sched_tick
+    ;call game_tick
+    str cx
+    cmp ax, cx
+    je .fin_isr32
+    mov [sched_tarea_selector], ax
+    jmp far [sched_tarea_offset]
 
     .fin_isr32:
 
@@ -90,31 +88,37 @@ _isr32:
 global _isr%1
 
 _isr%1:
-    pusha
+    pushad
     call fin_intr_pic1
     xor eax, eax
     in al, 0x60
 
     cmp eax, lanzar_jugadorA
+    mov ecx, 0
     je .lanzar_explorador
 
     cmp eax, lanzar_jugadorB
+    mov ecx, 1
     je .lanzar_explorador
 
-    push eax
-    call screen_pintar_tecla
-    pop eax
+    ;push eax
+    ;call screen_pintar_tecla
+    ;pop eax
+
     jmp .fin_teclado
 
     .lanzar_explorador:
-    call sched_jugador_actual
-    push eax
-    push 0
-    call game_jugador_erigir_pirata
+    xor ebx, ebx
+    push ebx
+    push ecx
+    call game_jugador_lanzar_pirata
+    
+    add esp, 8
+
     jmp .fin_teclado
 
     .fin_teclado:
-    popa
+    popad
     iret
 
 %endmacro
@@ -125,7 +129,6 @@ _isr%1:
 global _isr%1
 
 _isr%1:
-    xchg bx, bx
     pusha
     ;call screen_pintar_tecla
     

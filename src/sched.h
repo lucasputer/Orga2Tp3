@@ -14,16 +14,17 @@
 #include "mmu.h"
 #include "i386.h"
 
-uint tareas_jugadorA[MAX_CANT_PIRATAS_VIVOS];
-uint tareas_jugadorB[MAX_CANT_PIRATAS_VIVOS];
 uint ultimo_jugadorA;
 uint ultimo_jugadorB;
-char jugador_actual_es_jugadorA;
+char jugador_actual;
 uint indice_tarea_actual;
+jugador_t* jugador_a;
+jugador_t* jugador_b;
 
 
 uint sched_tick();
 uint sched_proxima_a_ejecutar();
 void sched_inicializar();
 uint sched_jugador_actual();
+void sched_inicializar_jugador(int j);
 #endif	/* !__SCHED_H__ */

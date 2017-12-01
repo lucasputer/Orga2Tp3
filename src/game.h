@@ -24,10 +24,13 @@ struct jugador_t;
 
 typedef struct pirata_t
 {
+    uint id;
     uint index;
     struct jugador_t *jugador;
-    uint es_explorador;
-
+    uint es_minero;
+    uint x;
+    uint y;
+    uint esta_vivo;
     // id unica, posicion, tipo, reloj
 } pirata_t;
 
@@ -51,14 +54,14 @@ uint game_xy2lineal();
 pirata_t* id_pirata2pirata(uint id);
 
 // ~ auxiliares sugeridas o requeridas (segun disponga enunciado) ~
-void game_pirata_inicializar(pirata_t *pirata, jugador_t *jugador, uint index, uint id);
+void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id, uint tipo);
 void game_pirata_erigir(pirata_t *pirata, jugador_t *j, uint tipo);
 void game_pirata_habilitar_posicion(jugador_t *j, pirata_t *pirata, int x, int y);
 void game_pirata_exploto(uint id);
+void game_inicializar();
 
 void game_jugador_inicializar(jugador_t *j);
-void game_jugador_lanzar_pirata(jugador_t *j, uint tipo, int x, int y);
-pirata_t* game_jugador_erigir_pirata(jugador_t *j, uint tipo);
+void game_jugador_lanzar_pirata(int j, uint tipo);
 void game_jugador_anotar_punto(jugador_t *j);
 void game_explorar_posicion(jugador_t *jugador, int x, int y);
 

@@ -8,6 +8,7 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 #include "mmu.h"
 #include "tss.h"
 #include "screen.h"
+#include "sched.h"
 
 #include <stdarg.h>
 
@@ -107,6 +108,7 @@ void game_inicializar()
 	game_jugador_inicializar(&jugadorA);
 	game_jugador_inicializar(&jugadorB);
 
+	sched_inicializar(&jugadorA, &jugadorB);
 }
 
 void game_jugador_inicializar_mapa(jugador_t *jug)
@@ -129,10 +131,21 @@ void game_jugador_inicializar(jugador_t *j)
     	j->y_puerto = POS_INIT_B_Y;
     }
 
+    for(int i = 0; i < MAX_CANT_PIRATAS_VIVOS; i++){
+    	j->piratas[i].esta_vivo = 0;
+    }
+
 }
 
-void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id)
+void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id, uint tipo)
 {
+	pirata->index = index;
+	pirata->id = id;
+	pirata->es_minero = tipo;
+	pirata->jugador = j;
+	pirata->x = j->x_puerto;
+	pirata->y = j->y_puerto;
+	pirata->esta_vivo = 1;
 }
 
 void game_tick(uint id_pirata)
@@ -146,16 +159,42 @@ void game_pirata_relanzar(pirata_t *pirata, jugador_t *j, uint tipo)
 {
 }
 
-pirata_t* game_jugador_erigir_pirata(jugador_t *j, uint tipo)
+
+void game_jugador_lanzar_pirata(int j, uint tipo)
 {
-    // ~ completar ~
+	jugador_t *jugador;
+	if(j == 0){
+		jugador = &jugadorA;
+	}else{
+		jugador = &jugadorB;
+	}
 
-	return NULL;
-}
+	//chequear si tiene lugar para lanzar
+	int i = 0;
+	int found = 0;
+	while(i < MAX_CANT_PIRATAS_VIVOS && !found){
+		if(jugador->piratas[i].esta_vivo == 0){
+			found = 1;
+		}else{
+			i++;
+		}
+	}
 
+	if(!found)
+		return;
 
-void game_jugador_lanzar_pirata(jugador_t *j, uint tipo, int x, int y)
-{
+	uint id = i;
+	if(j == 1){
+		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
+	}else{
+		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
+	}
+
+	game_pirata_inicializar(&(jugador->piratas[i]), jugador, i, id, tipo);
+	//lanzar la tarea
+	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
+
+	sched_inicializar_jugador(j);
 }
 
 void game_pirata_habilitar_posicion(jugador_t *j, pirata_t *pirata, int x, int y)
