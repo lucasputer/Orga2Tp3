@@ -129,7 +129,7 @@ _isr%1:
 global _isr%1
 
 _isr%1:
-    pusha
+    pushad
     ;call screen_pintar_tecla
     
     cmp eax, 1
@@ -147,7 +147,7 @@ _isr%1:
         add esp, 8
     .cavar:
     .posicion:
-    popa    
+    popad  
     iret
 
 %endmacro
