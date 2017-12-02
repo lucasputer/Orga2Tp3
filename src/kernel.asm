@@ -19,6 +19,7 @@ extern tss_inicializar_explorador_temp
 extern mmu_inicializar_dir_pirata
 extern game_inicializar
 
+extern game_jugador_lanzar_pirata
 ;UTILS TIENE LOS DEFINES DE VARIAS COSAS..ANDA A MIRAR
 %include "utils.asm"
 
@@ -140,6 +141,7 @@ start:
     ; Saltar a la primera tarea: Idle
 
     call game_inicializar
+
     jmp 0x0070:0
     ; Ciclar infinitamente (por si algo sale mal...)
     mov eax, 0xFFFF

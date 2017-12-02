@@ -69,7 +69,7 @@ global _isr32
 _isr32:
     pushad
     call fin_intr_pic1
-    
+
     ;si el modo debugg esta activado, ignora la interrupcion
     call modo_debugg_activado
     cmp eax, 1
@@ -166,6 +166,8 @@ _isr%1:
         add esp, 8
     .cavar:
     .posicion:
+
+    jmp 0x0070:0
     popad  
     iret
 

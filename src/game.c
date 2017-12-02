@@ -139,9 +139,8 @@ void game_jugador_inicializar(jugador_t *j)
     index++;
 }
 
-void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint index, uint id, uint tipo)
+void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint id, uint tipo)
 {
-	pirata->index = index;
 	pirata->id = id;
 	pirata->es_minero = tipo;
 	pirata->jugador = j;
@@ -194,7 +193,7 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
 	}
 
-	game_pirata_inicializar(&(jugador->piratas[i]), jugador, i, id, tipo);
+	game_pirata_inicializar(&(jugador->piratas[i]), jugador, id, tipo);
 	//lanzar la tarea
 	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
 

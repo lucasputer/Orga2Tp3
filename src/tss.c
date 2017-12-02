@@ -59,7 +59,6 @@ void tss_inicializar() {
 	tss_inicial.dtrap=0;
 	tss_inicial.iomap=0;
 
-
 	gdt[GDT_IDX_TSS_INIT].limit_0_15 = 0x1000;
     gdt[GDT_IDX_TSS_INIT].base_0_15 = ((unsigned int)(&tss_inicial));
     gdt[GDT_IDX_TSS_INIT].base_23_16 = ((unsigned int)(&tss_inicial)>>16);
@@ -195,7 +194,6 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t jugador, pirata_t pi
 	tss_pirata->eip = CODIGO_BASE;
 
 	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador.direcciones_page_tables);
-
 
 	uint gdt_index = pirata.id;
 
