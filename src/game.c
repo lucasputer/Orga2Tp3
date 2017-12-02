@@ -187,13 +187,10 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	if(!found)
 		return;
 
-	uchar color = C_FG_WHITE;
 	uint id = i;
 	if(j == 1){
-		color = color | C_BG_GREEN;
 		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
 	}else{
-		color = color | C_BG_CYAN;
 		id += GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
 	}
 
@@ -201,17 +198,7 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	//lanzar la tarea
 	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
 
-	char exp = ' ';
-	if(tipo == 0){
-		exp = 'E';
-	}else{
-		exp = 'M';
-	}
-
-	    print_dec(jugador->piratas[i].x, 2, 13, 20, 0x47);
-	    print_dec(jugador->piratas[i].y, 2, 23, 20, 0x47);
-
-	screen_pintar(exp, color, jugador->piratas[i].y, jugador->piratas[i].x);
+	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].x, jugador->piratas[i].y, MAPA_ALTO, MAPA_ANCHO);
 
 	sched_inicializar_jugador(j);
 }

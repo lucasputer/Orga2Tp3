@@ -59,10 +59,11 @@ unsigned char screen_color_jugador(jugador_t *j);
 unsigned char screen_caracter_pirata(unsigned int tipo);
 void screen_pintar_pirata(jugador_t *j, pirata_t *pirata);
 void screen_borrar_pirata(jugador_t *j, pirata_t *pirata);
-// void screen_pintar_reloj_pirata(jugador_t *j, pirata_t *pirata);
+void screen_pirata_movimiento(jugador_t *j, uint tipo, uint x, uint y, uint x_prev, uint y_prev);
 void screen_pintar_reloj_pirata(char c, equipo eq, int posicion);
 void screen_pintar_reloj_piratas(jugador_t *j);
 void screen_pintar_relojes();
+uint screen_posicion_valida(int x, int y);
 
 void screen_actualizar_posicion_mapa(uint x, uint y);
 void screen_stop_game_show_winner(jugador_t *j);
