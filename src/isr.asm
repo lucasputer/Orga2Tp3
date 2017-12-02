@@ -14,6 +14,8 @@ sched_tarea_selector:   dw 0x00
 %define lanzar_jugadorA 0xAA
 %define lanzar_jugadorB 0xB6
 
+%define tecla_debugg 0x95
+
 ;; PIC
 extern fin_intr_pic1
 
@@ -29,7 +31,8 @@ extern sched_jugador_actual
 extern game_tick
 extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
-
+extern modo_debugg_activado
+extern cambiar_modo_debugg
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -66,11 +69,13 @@ global _isr32
 _isr32:
     pushad
     call fin_intr_pic1
-    ;mov eax, 32
-    ;call screen_pintar_interrupcion
     
+    ;si el modo debugg esta activado, ignora la interrupcion
+    call modo_debugg_activado
+    cmp eax, 1
+    je .fin_isr32 
+
     call sched_tick
-    ;call game_tick
     str cx
     cmp ax, cx
     je .fin_isr32
@@ -90,20 +95,29 @@ global _isr%1
 _isr%1:
     pushad
     call fin_intr_pic1
+
+    xor edx, edx
     xor eax, eax
     in al, 0x60
 
-    cmp eax, lanzar_jugadorA
+    mov dl, al
+
+    cmp edx, tecla_debugg
+    je .mode_debugg
+
+    ;si la tecla no fue tecla_debugg y el modo debugg esta activado, 
+    ; ignora la interrupcion
+    call modo_debugg_activado
+    cmp eax, 1
+    je .fin_teclado 
+
+    cmp edx, lanzar_jugadorA
     mov ecx, 0
     je .lanzar_explorador
 
-    cmp eax, lanzar_jugadorB
+    cmp edx, lanzar_jugadorB
     mov ecx, 1
     je .lanzar_explorador
-
-    ;push eax
-    ;call screen_pintar_tecla
-    ;pop eax
 
     jmp .fin_teclado
 
@@ -115,6 +129,11 @@ _isr%1:
     
     add esp, 8
 
+    jmp .fin_teclado
+
+    .mode_debugg:
+    
+    call cambiar_modo_debugg
     jmp .fin_teclado
 
     .fin_teclado:

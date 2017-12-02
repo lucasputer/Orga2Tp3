@@ -20,6 +20,7 @@ char jugador_actual;
 uint indice_tarea_actual;
 jugador_t* jugador_a;
 jugador_t* jugador_b;
+char modo_debugg;
 
 
 uint sched_tick();
@@ -27,4 +28,6 @@ uint sched_proxima_a_ejecutar();
 void sched_inicializar();
 uint sched_jugador_actual();
 void sched_inicializar_jugador(int j);
+char modo_debugg_activado();
+void cambiar_modo_debugg();
 #endif	/* !__SCHED_H__ */

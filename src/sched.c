@@ -16,7 +16,8 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 	ultimo_jugadorA = MAX_CANT_PIRATAS_VIVOS;
 	ultimo_jugadorB = MAX_CANT_PIRATAS_VIVOS;
 	jugador_actual = 0;
-	
+	modo_debugg = 0;
+
 	indice_tarea_actual = SCHED_SIN_TAREAS;
 
 	jugador_a = j_a;
@@ -94,4 +95,17 @@ uint sched_proxima_a_ejecutar(){
 	}
 
 	return tareas_jugador[pos].id << 3;
+}
+
+char modo_debugg_activado(){
+	return modo_debugg;
+}
+
+void cambiar_modo_debugg(){
+	if(modo_debugg == 1){
+		modo_debugg = 0;
+	}
+	else{
+		modo_debugg = 1;
+	}
 }
