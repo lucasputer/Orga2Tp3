@@ -74,7 +74,7 @@ void screen_pintar_reloj_pirata(char c, equipo eq, int posicion){
     screen_pintar(c,color,fila,columna);
 }
 
-void screen_pirata_movimiento(jugador_t *j, uint tipo,uint x, uint y, uint x_prev, uint y_prev){
+void screen_pirata_movimiento(jugador_t *jugador, uint tipo,uint x, uint y, uint x_prev, uint y_prev){
 
     char exp = 'E';
     if(tipo == 1){
@@ -82,34 +82,44 @@ void screen_pirata_movimiento(jugador_t *j, uint tipo,uint x, uint y, uint x_pre
     }
 
     y += 1; //hay que correrlo uno porque la pantalla arranca un pixel abajo
-    uchar color_fondo = screen_color_jugador(j);
-    for(int i=-1; i<2; i++) {
-        for(int j=-1; j<2; j++) {
-            if(screen_posicion_valida(x+i,y+j)){
-                screen_pintar(' ', color_fondo, y+j, x+i);
-            }
-        }
-    }
+    uchar color_fondo = screen_color_jugador(jugador);
+
 
     uchar color_act = C_FG_WHITE;
-    if(j->index == 0){
+    if(jugador->index == 0){
         color_act = color_act | fondo_rojo;
     }else{
         color_act = color_act | fondo_azul;
     }
     screen_pintar(exp, color_act, y, x);
 
-    if (x_prev < MAPA_ANCHO && y_prev < MAPA_ALTO){
+    int pos_prev = jugador->posiciones_exploradas[x_prev][y_prev];
+    if (x_prev < MAPA_ANCHO && y_prev < MAPA_ALTO && pos_prev == 1){
         uchar color_prev = color_fondo | C_FG_BLACK;
         screen_pintar(exp, color_prev, y_prev + 1, x_prev);
+    }else if (pos_prev == 2){
+        screen_pintar_botin(jugador, x_prev, y_prev);
+    }else if (pos_prev == 3){
+        screen_pintar_botin_vacio(jugador, x_prev, y_prev);
     }
 
+}
+
+void screen_pintar_vacio(jugador_t *j, uint x, uint y){
+    uchar color = screen_color_jugador(j);
+    screen_pintar(' ', color, y + 1, x);
 }
 
 void screen_pintar_botin(jugador_t *j, uint x, uint y){
     uchar color = screen_color_jugador(j) | C_FG_BLACK;
     screen_pintar('o', color, y + 1, x);
 }
+
+void screen_pintar_botin_vacio(jugador_t *j, uint x, uint y){
+    uchar color = screen_color_jugador(j) | C_FG_BLACK;
+    screen_pintar('x', color, y + 1, x);
+}
+
 
 uint screen_posicion_valida(int x, int y) {
     return (x >= 0 && y >= 1 && x < MAPA_ANCHO && y - 1< MAPA_ALTO);

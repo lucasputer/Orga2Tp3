@@ -45,8 +45,6 @@ typedef struct jugador_t
     int x_puerto;
     int y_puerto;
     int puntos;
-    int botines_descubiertos[BOTINES_CANTIDAD][2];
-    int ultimo_botin_index;
     int posiciones_exploradas[MAPA_ANCHO][MAPA_ALTO];
     // coordenadas puerto, posiciones exploradas, mineros pendientes, etc
 } jugador_t;
