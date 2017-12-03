@@ -11,5 +11,32 @@
 
 void task() {
     /* Tarea */    
-   while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
+   /* Tarea */
+    int ancho = 1;
+    int alto  = 2;
+
+
+    while(1)
+    {
+        int i;
+        syscall_mover(IZQ);
+        ancho = ancho + 1;
+
+        for (i = 1; i < alto; i++)
+            syscall_mover(ARR);
+
+        for (i = 1; i < ancho; i++)
+            syscall_mover(DER);
+
+        syscall_mover(ARR);
+        alto = alto + 1;
+
+        for (i = 1; i < ancho; i++)
+            syscall_mover(IZQ);
+
+        for (i = 1; i < alto; i++)
+            syscall_mover(ABA);
+    }
+
+  while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
 }

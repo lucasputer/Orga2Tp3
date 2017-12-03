@@ -47,6 +47,7 @@ typedef struct jugador_t
     int puntos;
     int botines_descubiertos[BOTINES_CANTIDAD][2];
     int ultimo_botin_index;
+    int posiciones_exploradas[MAPA_ANCHO][MAPA_ALTO];
     // coordenadas puerto, posiciones exploradas, mineros pendientes, etc
 } jugador_t;
 
@@ -60,9 +61,10 @@ pirata_t* id_pirata2pirata(uint id);
 // ~ auxiliares sugeridas o requeridas (segun disponga enunciado) ~
 void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint id, uint tipo);
 void game_pirata_erigir(pirata_t *pirata, jugador_t *j, uint tipo);
-void game_pirata_habilitar_posicion(jugador_t *j, pirata_t *pirata, int x, int y);
+void game_explorador_visitar_posiciones(jugador_t* jugador, uint x, uint y);
 void game_pirata_exploto(uint id);
 void game_inicializar();
+uint game_posicion_valida(int x, int y);
 
 void game_jugador_inicializar(jugador_t *j);
 void game_jugador_lanzar_pirata(int j, uint tipo);
@@ -70,7 +72,6 @@ void game_jugador_anotar_punto(jugador_t *j);
 void game_chequear_botin(jugador_t *jugador, pirata_t* pirata);
 
 uint game_valor_tesoro(uint x, uint y);
-void game_calcular_posiciones_vistas(int *vistas_x, int *vistas_y, int x, int y);
 pirata_t* game_pirata_en_posicion(uint x, uint y);
 
 uint game_syscall_pirata_posicion(uint id, int idx);

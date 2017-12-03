@@ -78,23 +78,6 @@ uint game_valor_tesoro(uint x, uint y)
 	return 0;
 }
 
-// dada una posicion (x,y) guarda las posiciones de alrededor en dos arreglos, uno para las x y otro para las y
-void game_calcular_posiciones_vistas(int *vistas_x, int *vistas_y, int x, int y)
-{
-	int next = 0;
-	int i, j;
-	for (i = -1; i <= 1; i++)
-	{
-		for (j = -1; j <= 1; j++)
-		{
-			vistas_x[next] = x + j;
-			vistas_y[next] = y + i;
-			next++;
-		}
-	}
-}
-
-
 void game_inicializar()
 {
 	int paginas;
@@ -112,10 +95,6 @@ void game_inicializar()
 	sched_inicializar(&jugadorA, &jugadorB);
 }
 
-void game_jugador_inicializar_mapa(jugador_t *jug)
-{
-
-}
 
 void game_jugador_inicializar(jugador_t *j)
 {
@@ -141,7 +120,6 @@ void game_jugador_inicializar(jugador_t *j)
     	j->botines_descubiertos[i][1] = MAPA_ALTO;
     }
    	j->ultimo_botin_index = 0;
-    
 
     index++;
 }
@@ -202,15 +180,13 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 
 	game_pirata_inicializar(&(jugador->piratas[i]), jugador, id, tipo);
 	//lanzar la tarea
-	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
+	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
+
+	game_explorador_visitar_posiciones(jugador, jugador->x_puerto, jugador->y_puerto);
 
 	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
 
 	sched_inicializar_jugador(j);
-}
-
-void game_pirata_habilitar_posicion(jugador_t *j, pirata_t *pirata, int x, int y)
-{
 }
 
 
@@ -219,13 +195,14 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	if(pirata->es_minero == 0){
 	    for(int i=-1; i<2; i++) {
 	        for(int j=-1; j<2; j++) {
-	            for(int b = 0; b < BOTINES_CANTIDAD; b++){
+	        	if(game_posicion_valida(pirata->x + i, pirata->y + j)){
+	        		for(int b = 0; b < BOTINES_CANTIDAD; b++){
 	            	if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
 
 	            		//chequeo si es la primera vez que encuentro el botin
 	            		int primera_vez = 1, d = 0;
 	            		while(primera_vez == 1 && d < (jugador->ultimo_botin_index)){
-	            			if(jugador->botines_descubiertos[d][0] == pirata->x && jugador->botines_descubiertos[d][1] == pirata->y){
+	            			if(jugador->botines_descubiertos[d][0] == pirata->x + i && jugador->botines_descubiertos[d][1] == pirata->y + j){
 	            				primera_vez = 0;
 	            			}
 	            			d++;
@@ -235,14 +212,15 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	            			//lanzar minero
 							game_jugador_lanzar_pirata(jugador->index, 1);
 							//agregar botin a botines encontrados
-							jugador->botines_descubiertos[jugador->ultimo_botin_index][0] = pirata->x;
-							jugador->botines_descubiertos[jugador->ultimo_botin_index][1] = pirata->y;
+							jugador->botines_descubiertos[jugador->ultimo_botin_index][0] = pirata->x + i;
+							jugador->botines_descubiertos[jugador->ultimo_botin_index][1] = pirata->y + j;
 							jugador->ultimo_botin_index += 1;
 	            		}
 						//pintar botin
 						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
 					}
 	            }
+	        	}
 	        }
 	    }		
 	}else{
@@ -252,6 +230,17 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 			}
 		}
 	}
+}
+
+void game_explorador_visitar_posiciones(jugador_t* jugador, uint x, uint y)
+{
+	for(int i=-1; i<2; i++) {
+	        for(int j=-1; j<2; j++) {
+	        	if(game_posicion_valida(x+i,y+j)){
+	        		jugador->posiciones_exploradas[x + i][y + j] = 1;
+	        	}
+	        }
+	    }
 }
 
 
@@ -278,8 +267,15 @@ uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
 	
  	x+=pirata_actual->x;
  	y+=pirata_actual->y;
- 	if(!game_posicion_valida(x,y)) {
+ 	if(!game_posicion_valida(x,y))
  		error();
+
+ 	if(pirata_actual->es_minero&& jugador->posiciones_exploradas[x][y] == 0)
+ 		error();
+
+ 	// marco como visitadas las nuevas posiciones
+ 	if(!pirata_actual-> es_minero){
+ 		game_explorador_visitar_posiciones(jugador,x,y);
  	}
 
  	x_prev = pirata_actual->x;

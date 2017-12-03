@@ -76,24 +76,27 @@ void screen_pintar_reloj_pirata(char c, equipo eq, int posicion){
 
 void screen_pirata_movimiento(jugador_t *j, uint tipo,uint x, uint y, uint x_prev, uint y_prev){
 
-    char exp = ' ';
-    if(tipo == 0){
-        exp = 'E';
-    }else{
+    char exp = 'E';
+    if(tipo == 1){
         exp = 'M';
     }
 
-    y += 1;
+    y += 1; //hay que correrlo uno porque la pantalla arranca un pixel abajo
     uchar color_fondo = screen_color_jugador(j);
     for(int i=-1; i<2; i++) {
         for(int j=-1; j<2; j++) {
-            if(screen_posicion_valida(x+i,y+j) ==1){
+            if(screen_posicion_valida(x+i,y+j)){
                 screen_pintar(' ', color_fondo, y+j, x+i);
             }
         }
     }
 
-    uchar color_act = color_fondo | C_FG_WHITE;
+    uchar color_act = C_FG_WHITE;
+    if(j->index == 0){
+        color_act = color_act | fondo_rojo;
+    }else{
+        color_act = color_act | fondo_azul;
+    }
     screen_pintar(exp, color_act, y, x);
 
     if (x_prev < MAPA_ANCHO && y_prev < MAPA_ALTO){
