@@ -31,8 +31,11 @@ extern sched_jugador_actual
 extern game_tick
 extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
-extern modo_debugg_activado
+extern sched_modo_debugg
 extern cambiar_modo_debugg
+extern sched_juego_pausado
+extern sched_pausar_juego
+extern sched_despausar_juego
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -42,9 +45,18 @@ global _isr%1
 
 _isr%1:
     mov eax, %1
-    push eax
+    mov ebx, eax
+
+    call sched_modo_debugg
+    cmp eax, 1
+    je .pausar
+    
     call screen_pintar_interrupcion
-    ;call imprimir mensaje con la interrupcion
+    jmp $
+
+    .pausar
+    call sched_pausar_juego
+    xchg bx, bx
     jmp $
 
 %endmacro
@@ -53,12 +65,18 @@ _isr%1:
 global _isr%1
 
 _isr%1:
-    mov eax, %1
-    push eax
+    call sched_modo_debugg
+    cmp eax, 1
+    je .pausar
+    
     call screen_pintar_error
-    ;call imprimir mensaje con la interrupcion
-    ;recuperar la esp el error_core
     jmp $
+
+    .pausar
+    call sched_pausar_juego
+    xchg bx, bx
+    jmp $
+
 
 %endmacro
 
@@ -71,8 +89,8 @@ _isr32:
     pushad
     call fin_intr_pic1
 
-    ;si el modo debugg esta activado, ignora la interrupcion
-    call modo_debugg_activado
+    ;si el juego esta pausado, ignora la interrupcion
+    call sched_juego_pausado
     cmp eax, 1
     je .fin_isr32 
 
@@ -80,6 +98,7 @@ _isr32:
     str cx
     cmp ax, cx
     je .fin_isr32
+
     mov [sched_tarea_selector], ax
     jmp far [sched_tarea_offset]
 
@@ -90,10 +109,9 @@ _isr32:
 ;;
 ;; Rutina de atención del TECLADO
 ;; -------------------------------------------------------------------------- ;;
-%macro ISR_TECLADO 1
-global _isr%1
+global _isr33
 
-_isr%1:
+_isr33:
     pushad
     call fin_intr_pic1
 
@@ -106,9 +124,8 @@ _isr%1:
     cmp edx, tecla_debugg
     je .mode_debugg
 
-    ;si la tecla no fue tecla_debugg y el modo debugg esta activado, 
-    ; ignora la interrupcion
-    call modo_debugg_activado
+    ;si la tecla no fue tecla_debugg y el juego esta pausado, ignora la interrupcion
+    call sched_juego_pausado
     cmp eax, 1
     je .fin_teclado 
 
@@ -134,24 +151,29 @@ _isr%1:
 
     .mode_debugg:
     
+    call sched_juego_pausado
+    cmp eax, 1
+    je .despausar
+
     call cambiar_modo_debugg
+    jmp .fin_teclado
+
+    .despausar:
+    call sched_despausar_juego
     jmp .fin_teclado
 
     .fin_teclado:
     popad
     iret
 
-%endmacro
 ;;
 ;; Rutinas de atención de las SYSCALLS
 ;; -------------------------------------------------------------------------- ;;
-%macro ISR_SOFTWARE 1
-global _isr%1
+global _isr70
 
-_isr%1:
+_isr70:
     pushad
-    ;call screen_pintar_tecla
-    
+
 
     cmp eax, 1
     je .moverse
@@ -173,12 +195,6 @@ _isr%1:
     popad  
     iret
 
-%endmacro
-
-;;
-;; Datos
-;; -------------------------------------------------------------------------- ;;
-; Scheduler
 
 ;;
 ;; Rutina de atención de las EXCEPCIONES
@@ -203,8 +219,6 @@ ISR 16
 ISR_CON_ERROR 17
 ISR 18
 ISR 19
-ISR_TECLADO 33
-ISR_SOFTWARE 70
 
 
 

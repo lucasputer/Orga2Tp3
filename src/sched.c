@@ -17,6 +17,7 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 	ultimo_jugadorB = MAX_CANT_PIRATAS_VIVOS;
 	jugador_actual = 0;
 	modo_debugg = 0;
+	juego_pausado = 0;
 
 	indice_tarea_actual = SCHED_SIN_TAREAS;
 
@@ -96,15 +97,31 @@ uint sched_proxima_a_ejecutar(){
 	return tareas_jugador[pos].id << 3;
 }
 
-char modo_debugg_activado(){
+char sched_modo_debugg(){
 	return modo_debugg;
+}
+
+char sched_juego_pausado(){
+	return juego_pausado;
 }
 
 void cambiar_modo_debugg(){
 	if(modo_debugg == 1){
 		modo_debugg = 0;
+		print(" ", 47 , 0, 0x47);
 	}
 	else{
 		modo_debugg = 1;
+		print("D", 47 , 0, 0x47);
 	}
+}
+
+void sched_pausar_juego(){
+	juego_pausado = 1;
+	print("P", 50 , 0, 0x47);
+}
+
+void sched_despausar_juego(){
+	juego_pausado = 0;
+	print(" ", 50 , 0, 0x47);
 }
