@@ -24,8 +24,8 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 //pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
 uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
-                                        {30,  3, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
-                                        {49,  3, 50}, {48, 38, 50}, {64, 21, 100}, {34, 21, 100}
+                                        {30,  4, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
+                                        {47,  30, 50}, {48, 38, 50}, {64, 21, 100}, {34, 21, 100}
                                     };
 
 jugador_t jugadorA;
@@ -111,15 +111,10 @@ void game_jugador_inicializar(jugador_t *j)
     	j->y_puerto = POS_INIT_B_Y;
     }
 
-    for(int i = 0; i < MAX_CANT_PIRATAS_VIVOS; i++){
+    int i;
+    for(i = 0; i < MAX_CANT_PIRATAS_VIVOS; i++){
     	j->piratas[i].esta_vivo = 0;
     }
-
-    for(int i = 0; i < BOTINES_CANTIDAD; i++){
-    	j->botines_descubiertos[i][0] = MAPA_ANCHO;
-    	j->botines_descubiertos[i][1] = MAPA_ALTO;
-    }
-   	j->ultimo_botin_index = 0;
 
     index++;
 }
@@ -182,9 +177,11 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	//lanzar la tarea
 	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
 
-	game_explorador_visitar_posiciones(jugador, jugador->x_puerto, jugador->y_puerto);
+	if(tipo == 0){
+		game_chequear_botin(jugador,&(jugador->piratas[i]));
+		screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
+	}
 
-	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
 
 	sched_inicializar_jugador(j);
 }
@@ -193,33 +190,27 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 {
 	if(pirata->es_minero == 0){
-	    for(int i=-1; i<2; i++) {
-	        for(int j=-1; j<2; j++) {
+		int i = -1;
+		int j = -1;
+		int b = 0;
+	    for(i=-1; i<2; i++) {
+	        for(j=-1; j<2; j++) {
 	        	if(game_posicion_valida(pirata->x + i, pirata->y + j)){
-	        		for(int b = 0; b < BOTINES_CANTIDAD; b++){
-	            	if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
+	        		if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
+	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
+	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
+	        					game_jugador_lanzar_pirata(jugador->index, 1);
+	        					screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
+	        					jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
+	        				}
+	        			}
+	        		}
+	        		
+	        	}
 
-	            		//chequeo si es la primera vez que encuentro el botin
-	            		int primera_vez = 1, d = 0;
-	            		while(primera_vez == 1 && d < (jugador->ultimo_botin_index)){
-	            			if(jugador->botines_descubiertos[d][0] == pirata->x + i && jugador->botines_descubiertos[d][1] == pirata->y + j){
-	            				primera_vez = 0;
-	            			}
-	            			d++;
-	            		}
-
-	            		if(primera_vez == 1){
-	            			//lanzar minero
-							game_jugador_lanzar_pirata(jugador->index, 1);
-							//agregar botin a botines encontrados
-							jugador->botines_descubiertos[jugador->ultimo_botin_index][0] = pirata->x + i;
-							jugador->botines_descubiertos[jugador->ultimo_botin_index][1] = pirata->y + j;
-							jugador->ultimo_botin_index += 1;
-	            		}
-						//pintar botin
-						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
-					}
-	            }
+	        	if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
+	        		screen_pintar_vacio(jugador, pirata->x +i, pirata->y +j);
+	        		jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
 	        	}
 	        }
 	    }		
@@ -232,22 +223,11 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	}
 }
 
-void game_explorador_visitar_posiciones(jugador_t* jugador, uint x, uint y)
-{
-	for(int i=-1; i<2; i++) {
-	        for(int j=-1; j<2; j++) {
-	        	if(game_posicion_valida(x+i,y+j)){
-	        		jugador->posiciones_exploradas[x + i][y + j] = 1;
-	        	}
-	        }
-	    }
-}
-
 
 uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
 {	
-	int x_prev = MAPA_ANCHO;
-	int y_prev = MAPA_ALTO;
+	// int x_prev = MAPA_ANCHO;
+	// int y_prev = MAPA_ALTO;
 	int x = 0;
 	int y = 0;
 	game_dir2xy(dir, &x, &y);
@@ -274,19 +254,16 @@ uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
  		error();
 
  	// marco como visitadas las nuevas posiciones
- 	if(!pirata_actual-> es_minero){
- 		game_explorador_visitar_posiciones(jugador,x,y);
+ 	if(!(pirata_actual-> es_minero)){
+ 		game_chequear_botin(jugador,pirata_actual);
  	}
-
- 	x_prev = pirata_actual->x;
- 	y_prev = pirata_actual->y;
+ 	screen_pirata_movimiento(jugador, pirata_actual->es_minero, x, y, pirata_actual->x, pirata_actual->y);
+ 	// x_prev = pirata_actual->x;
+ 	// y_prev = pirata_actual->y;
  	pirata_actual->x = x;
  	pirata_actual->y = y;
 	
  	mmu_mover_pirata(rcr3(),pirata_actual->x, pirata_actual->y, pirata_actual->es_minero, jugador->index);
- 	screen_pirata_movimiento(jugador, pirata_actual->es_minero, pirata_actual->x, pirata_actual->y, x_prev, y_prev);
-
- 	game_chequear_botin(jugador,pirata_actual);
 
     return 0;
 }
