@@ -33,6 +33,7 @@ extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
 extern modo_debugg_activado
 extern cambiar_modo_debugg
+extern tss_matar_tarea
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -43,9 +44,12 @@ global _isr%1
 _isr%1:
     mov eax, %1
     push eax
+
     call screen_pintar_interrupcion
+    call tss_matar_tarea
+    add esp, 4
     ;call imprimir mensaje con la interrupcion
-    jmp $
+    jmp 0x0070:0
 
 %endmacro
 
@@ -56,9 +60,11 @@ _isr%1:
     mov eax, %1
     push eax
     call screen_pintar_error
+    call tss_matar_tarea
+    add esp, 4
     ;call imprimir mensaje con la interrupcion
     ;recuperar la esp el error_core
-    jmp $
+    jmp 0x0070:0
 
 %endmacro
 

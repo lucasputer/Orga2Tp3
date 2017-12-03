@@ -330,6 +330,17 @@ void game_terminar_si_es_hora()
 {
 }
 
+void game_matar_pirata(uint tr) {
+	uint id_pirata = tr >> 3;
+	int i = 0;
+	while (i< MAX_CANT_PIRATAS_VIVOS && jugadorA.piratas[i].id != id_pirata) i++;
+	if(i < MAX_CANT_PIRATAS_VIVOS) jugadorA.piratas[i].esta_vivo = 0;
+	i = 0;
+	while (i< MAX_CANT_PIRATAS_VIVOS && jugadorB.piratas[i].id != id_pirata) i++;
+	if(i < MAX_CANT_PIRATAS_VIVOS) jugadorB.piratas[i].esta_vivo = 0;
+
+}
+
 
 #define KB_w        0x11 // 0x91
 #define KB_s        0x1f // 0x9f
