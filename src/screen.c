@@ -83,34 +83,39 @@ void screen_pirata_movimiento(jugador_t *j, uint tipo,uint x, uint y, uint x_pre
         exp = 'M';
     }
 
-    x += 1;
+    y += 1;
     uchar color_fondo = screen_color_jugador(j);
     for(int i=-1; i<2; i++) {
         for(int j=-1; j<2; j++) {
             if(screen_posicion_valida(x+i,y+j) ==1){
-                screen_pintar(' ', color_fondo, x+i, y+j);
+                screen_pintar(' ', color_fondo, y+j, x+i);
             }
         }
     }
 
     uchar color_act = color_fondo | C_FG_WHITE;
-    screen_pintar(exp, color_act, x, y);
+    screen_pintar(exp, color_act, y, x);
 
     if (x_prev < MAPA_ANCHO && y_prev < MAPA_ALTO){
         uchar color_prev = color_fondo | C_FG_BLACK;
-        screen_pintar(exp, color_prev, x_prev, y_prev);
+        screen_pintar(exp, color_prev, y_prev + 1, x_prev);
     }
 
 }
 
+void screen_pintar_botin(jugador_t *j, uint x, uint y){
+    uchar color = screen_color_jugador(j) | C_FG_BLACK;
+    screen_pintar('o', color, y + 1, x);
+}
+
 uint screen_posicion_valida(int x, int y) {
-    return (x >= 1 && y >= 0 && x < MAPA_ANCHO + 1 && y < MAPA_ALTO);
+    return (x >= 0 && y >= 1 && x < MAPA_ANCHO && y - 1< MAPA_ALTO);
 }
 
 uchar screen_color_jugador(jugador_t *j){
-    uchar color = C_BG_CYAN;
+    uchar color = C_BG_GREEN;
     if(j->index == 1){
-        color = C_BG_GREEN;
+        color = C_BG_CYAN;
     }
 
     return color;

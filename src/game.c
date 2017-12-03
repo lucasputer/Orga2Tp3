@@ -21,7 +21,7 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 #define CANT_POSICIONES_VISTAS            9
 #define MAX_SIN_CAMBIOS                 999
 
-#define BOTINES_CANTIDAD 8
+//pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
 uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
                                         {30,  3, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
@@ -136,6 +136,13 @@ void game_jugador_inicializar(jugador_t *j)
     	j->piratas[i].esta_vivo = 0;
     }
 
+    for(int i = 0; i < BOTINES_CANTIDAD; i++){
+    	j->botines_descubiertos[i][0] = MAPA_ANCHO;
+    	j->botines_descubiertos[i][1] = MAPA_ALTO;
+    }
+   	j->ultimo_botin_index = 0;
+    
+
     index++;
 }
 
@@ -207,54 +214,84 @@ void game_pirata_habilitar_posicion(jugador_t *j, pirata_t *pirata, int x, int y
 }
 
 
-void game_explorar_posicion(jugador_t *jugador, int c, int f)
+void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 {
+	if(pirata->es_minero == 0){
+	    for(int i=-1; i<2; i++) {
+	        for(int j=-1; j<2; j++) {
+	            for(int b = 0; b < BOTINES_CANTIDAD; b++){
+	            	if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
+
+	            		//chequeo si es la primera vez que encuentro el botin
+	            		int primera_vez = 1, d = 0;
+	            		while(primera_vez == 1 && d < (jugador->ultimo_botin_index)){
+	            			if(jugador->botines_descubiertos[d][0] == pirata->x && jugador->botines_descubiertos[d][1] == pirata->y){
+	            				primera_vez = 0;
+	            			}
+	            			d++;
+	            		}
+
+	            		if(primera_vez == 1){
+	            			//lanzar minero
+							game_jugador_lanzar_pirata(jugador->index, 1);
+							//agregar botin a botines encontrados
+							jugador->botines_descubiertos[jugador->ultimo_botin_index][0] = pirata->x;
+							jugador->botines_descubiertos[jugador->ultimo_botin_index][1] = pirata->y;
+							jugador->ultimo_botin_index += 1;
+	            		}
+						//pintar botin
+						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
+					}
+	            }
+	        }
+	    }		
+	}else{
+		for(int b = 0; b < BOTINES_CANTIDAD; b++){
+			if(pirata->x == botines[b][0] && pirata->y == botines[b][1]){
+				//sumar puntos, sacar botin
+			}
+		}
+	}
 }
 
 
 uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
-{
+{	
+	int x_prev = MAPA_ANCHO;
+	int y_prev = MAPA_ALTO;
 	int x = 0;
 	int y = 0;
 	game_dir2xy(dir, &x, &y);
 	uint id_pirata_actual = rtr() >> 3;
-    if(id_jugador == 0) {
-	     
-     	uint index_pirata_actual_jugador_a = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
-     	pirata_t* pirata_actual_jugador_a = &jugadorA.piratas[index_pirata_actual_jugador_a];
-     	x+=pirata_actual_jugador_a->x;
-     	y+=pirata_actual_jugador_a->y;
-     	if(!game_posicion_valida(x,y)) {
-     		error();
-     	}
-     	pirata_actual_jugador_a->x = x;
-     	pirata_actual_jugador_a->y = y;
-     	
-	 	print_dec(id_jugador,2,33,20,0x47);
-	    print_dec(pirata_actual_jugador_a->x, 2, 13, 20, 0x47);
-	    print_dec(pirata_actual_jugador_a->y, 2, 23, 20, 0x47);
-    	
-     	mmu_mover_pirata(rcr3(),pirata_actual_jugador_a->x, pirata_actual_jugador_a->y, pirata_actual_jugador_a->es_minero, jugadorA.index);
-     	screen_pirata_movimiento(&jugadorA, pirata_actual_jugador_a->es_minero, pirata_actual_jugador_a->y, pirata_actual_jugador_a->x, MAPA_ALTO, MAPA_ANCHO);
-     } else if(id_jugador == 1) {
-	     
-     	uint index_pirata_actual_jugador_b = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
-     	pirata_t* pirata_actual_jugador_b = &jugadorB.piratas[index_pirata_actual_jugador_b];
-     	x+=pirata_actual_jugador_b->x;
-     	y+=pirata_actual_jugador_b->y;
-     	if(!game_posicion_valida(x,y)) {
-     		error();
-     	}
-     	pirata_actual_jugador_b->x = x;
-     	pirata_actual_jugador_b->y = y;
-     	
-	 	print_dec(id_jugador,2,33,20,0x47);
-	    print_dec(pirata_actual_jugador_b->x, 2, 13, 20, 0x47);
-	    print_dec(pirata_actual_jugador_b->y, 2, 23, 20, 0x47);
-    	
-     	mmu_mover_pirata(rcr3(),pirata_actual_jugador_b->x, pirata_actual_jugador_b->y, pirata_actual_jugador_b->es_minero, jugadorB.index);
-     	screen_pirata_movimiento(&jugadorB, pirata_actual_jugador_b->es_minero, pirata_actual_jugador_b->y, pirata_actual_jugador_b->x, MAPA_ALTO, MAPA_ANCHO);
-     }
+	pirata_t* pirata_actual;
+	jugador_t* jugador;
+	if(id_jugador == 0) {
+		jugador = &jugadorA;
+		uint index_pirata_actual = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
+ 		pirata_actual = &(jugador->piratas[index_pirata_actual]);
+	}else{
+		jugador = &jugadorB;
+		uint index_pirata_actual_jugador_b = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
+ 		pirata_actual = &(jugador->piratas[index_pirata_actual_jugador_b]);
+	}
+
+	
+ 	x+=pirata_actual->x;
+ 	y+=pirata_actual->y;
+ 	if(!game_posicion_valida(x,y)) {
+ 		error();
+ 	}
+
+ 	x_prev = pirata_actual->x;
+ 	y_prev = pirata_actual->y;
+ 	pirata_actual->x = x;
+ 	pirata_actual->y = y;
+	
+ 	mmu_mover_pirata(rcr3(),pirata_actual->x, pirata_actual->y, pirata_actual->es_minero, jugador->index);
+ 	screen_pirata_movimiento(jugador, pirata_actual->es_minero, pirata_actual->x, pirata_actual->y, x_prev, y_prev);
+
+ 	game_chequear_botin(jugador,pirata_actual);
+
     return 0;
 }
 

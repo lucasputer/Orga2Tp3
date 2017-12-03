@@ -64,6 +64,7 @@ void screen_pintar_reloj_pirata(char c, equipo eq, int posicion);
 void screen_pintar_reloj_piratas(jugador_t *j);
 void screen_pintar_relojes();
 uint screen_posicion_valida(int x, int y);
+void screen_pintar_botin(jugador_t *j, uint x, uint y);
 
 void screen_actualizar_posicion_mapa(uint x, uint y);
 void screen_stop_game_show_winner(jugador_t *j);
