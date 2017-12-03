@@ -67,6 +67,7 @@ _isr%1:
 ;; -------------------------------------------------------------------------- ;;
 global _isr32
 _isr32:
+    .start:
     pushad
     call fin_intr_pic1
 
@@ -151,6 +152,7 @@ _isr%1:
     pushad
     ;call screen_pintar_tecla
     
+
     cmp eax, 1
     je .moverse
     cmp eax, 2

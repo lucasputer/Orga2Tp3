@@ -197,7 +197,7 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	//lanzar la tarea
 	tss_inicializar_pirata(tipo, i,*jugador,jugador->piratas[i]);
 
-	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].x, jugador->piratas[i].y, MAPA_ALTO, MAPA_ANCHO);
+	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
 
 	sched_inicializar_jugador(j);
 }
@@ -212,13 +212,49 @@ void game_explorar_posicion(jugador_t *jugador, int c, int f)
 }
 
 
-uint game_syscall_pirata_mover(uint id, direccion dir)
+uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
 {
-	// int x = 0;
-	// int y = 0;
-	// game_dir2xy(dir, &x, &y);
- //    print_dec(x, 2, 13, 20, 0x47);
- //    print_dec(y, 2, 23, 20, 0x47);
+	int x = 0;
+	int y = 0;
+	game_dir2xy(dir, &x, &y);
+	uint id_pirata_actual = rtr() >> 3;
+    if(id_jugador == 0) {
+	     
+     	uint index_pirata_actual_jugador_a = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A;
+     	pirata_t* pirata_actual_jugador_a = &jugadorA.piratas[index_pirata_actual_jugador_a];
+     	x+=pirata_actual_jugador_a->x;
+     	y+=pirata_actual_jugador_a->y;
+     	if(!game_posicion_valida(x,y)) {
+     		error();
+     	}
+     	pirata_actual_jugador_a->x = x;
+     	pirata_actual_jugador_a->y = y;
+     	
+	 	print_dec(id_jugador,2,33,20,0x47);
+	    print_dec(pirata_actual_jugador_a->x, 2, 13, 20, 0x47);
+	    print_dec(pirata_actual_jugador_a->y, 2, 23, 20, 0x47);
+    	
+     	mmu_mover_pirata(rcr3(),pirata_actual_jugador_a->x, pirata_actual_jugador_a->y, pirata_actual_jugador_a->es_minero, jugadorA.index);
+     	screen_pirata_movimiento(&jugadorA, pirata_actual_jugador_a->es_minero, pirata_actual_jugador_a->y, pirata_actual_jugador_a->x, MAPA_ALTO, MAPA_ANCHO);
+     } else if(id_jugador == 1) {
+	     
+     	uint index_pirata_actual_jugador_b = id_pirata_actual - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_B;
+     	pirata_t* pirata_actual_jugador_b = &jugadorB.piratas[index_pirata_actual_jugador_b];
+     	x+=pirata_actual_jugador_b->x;
+     	y+=pirata_actual_jugador_b->y;
+     	if(!game_posicion_valida(x,y)) {
+     		error();
+     	}
+     	pirata_actual_jugador_b->x = x;
+     	pirata_actual_jugador_b->y = y;
+     	
+	 	print_dec(id_jugador,2,33,20,0x47);
+	    print_dec(pirata_actual_jugador_b->x, 2, 13, 20, 0x47);
+	    print_dec(pirata_actual_jugador_b->y, 2, 23, 20, 0x47);
+    	
+     	mmu_mover_pirata(rcr3(),pirata_actual_jugador_b->x, pirata_actual_jugador_b->y, pirata_actual_jugador_b->es_minero, jugadorB.index);
+     	screen_pirata_movimiento(&jugadorB, pirata_actual_jugador_b->es_minero, pirata_actual_jugador_b->y, pirata_actual_jugador_b->x, MAPA_ALTO, MAPA_ANCHO);
+     }
     return 0;
 }
 

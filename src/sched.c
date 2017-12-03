@@ -25,16 +25,11 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 }
 
 uint sched_tick(){
-
-
-
 	uint proxima = sched_proxima_a_ejecutar();
 	if(proxima != 0x0070){
 		indice_tarea_actual = proxima >> 3;
 	}
 	game_tick(indice_tarea_actual);
-
-	acum++;
 
 	return  proxima;
 }
