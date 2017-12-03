@@ -210,14 +210,8 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        		
 	        	}
 	        }
-	    }		
-	}else{
-		for(int b = 0; b < BOTINES_CANTIDAD; b++){
-			if(pirata->x == botines[b][0] && pirata->y == botines[b][1]){
-				//sumar puntos, sacar botin
-			}
-		}
-	}
+	    }	
+	}	
 }
 
 

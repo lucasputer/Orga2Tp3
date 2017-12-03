@@ -125,6 +125,15 @@ uint screen_posicion_valida(int x, int y) {
     return (x >= 0 && y >= 1 && x < MAPA_ANCHO && y - 1< MAPA_ALTO);
 }
 
+void screen_borrar_pirata(pirata_t* pirata){
+    char exp = 'E';
+    if(pirata->es_minero == 1){
+        exp = 'M';
+    }
+    uchar color = screen_color_jugador(pirata->jugador) | C_FG_BLACK;
+    screen_pintar(exp, color, pirata->y + 1 , pirata->x);
+}
+
 uchar screen_color_jugador(jugador_t *j){
     uchar color = C_BG_GREEN;
     if(j->index == 1){
