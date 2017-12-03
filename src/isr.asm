@@ -36,6 +36,7 @@ extern cambiar_modo_debugg
 extern sched_juego_pausado
 extern sched_pausar_juego
 extern sched_despausar_juego
+extern tss_matar_tarea
 ;;
 ;; Definición de MACROS
 ;; -------------------------------------------------------------------------- ;;
@@ -48,16 +49,22 @@ _isr%1:
     mov ebx, eax
 
     call sched_modo_debugg
-    cmp eax, 1
-    je .pausar
+    cmp eax, 0
+    je .noPausar
     
+    call sched_pausar_juego
+
+    .noPausar:
+    push ebx
     call screen_pintar_interrupcion
+    add esp, 4
+
+    call tss_matar_tarea
+    
+    .fin: 
+    jmp 0x0070:0
     jmp $
 
-    .pausar
-    call sched_pausar_juego
-    xchg bx, bx
-    jmp $
 
 %endmacro
 
@@ -65,18 +72,25 @@ _isr%1:
 global _isr%1
 
 _isr%1:
+    mov eax, %1
+    mov ebx, eax
+
     call sched_modo_debugg
-    cmp eax, 1
-    je .pausar
+    cmp eax, 0
+    je .noPausar
     
-    call screen_pintar_error
-    jmp $
-
-    .pausar
     call sched_pausar_juego
-    xchg bx, bx
-    jmp $
 
+    .noPausar:
+    push ebx
+    call screen_pintar_error
+    add esp, 4
+
+    call tss_matar_tarea
+    
+    .fin: 
+    jmp 0x0070:0
+    jmp $
 
 %endmacro
 
@@ -173,7 +187,6 @@ global _isr70
 
 _isr70:
     pushad
-
 
     cmp eax, 1
     je .moverse
