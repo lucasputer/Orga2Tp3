@@ -24,7 +24,7 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 //pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
 uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
-                                        {30,  4, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
+                                        {30,  1, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
                                         {47,  30, 50}, {48, 38, 50}, {64, 21, 100}, {34, 21, 100}
                                     };
 
@@ -266,10 +266,39 @@ uint game_syscall_cavar(uint id)
 	return 0;
 }
 
-uint game_syscall_pirata_posicion(uint id, int idx)
-{
-    // ~ completar ~
-    return 0;
+void game_posicion_pirata_actual(int* x, int* y){
+	int indice = rtr() >> 3;
+	indice -= 15;
+	jugador_t* jugador = &jugadorA;
+	if(indice >= 8){
+		indice -= 8;
+		jugador = &jugadorB;
+	}
+
+	pirata_t* pirata = &(jugador->piratas[indice]);
+	*x =  pirata->x;
+	*y = pirata->y;
+}
+
+uint game_syscall_pirata_posicion(uint id_jugador, int indice)
+{	
+	jugador_t* jugador;
+
+	int x,y;
+
+	if(indice == -1){
+		game_posicion_pirata_actual(&x,&y);
+	}else{
+		if(id_jugador == 0) {
+			jugador = &jugadorA;
+		}else{
+			jugador = &jugadorB;
+		}
+		x = jugador->piratas[indice].x;
+		y = jugador->piratas[indice].y;
+	}
+	
+	return (y << 8 | x);
 }
 
 uint game_syscall_manejar(uint syscall, uint param1)

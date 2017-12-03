@@ -10,9 +10,9 @@
 #include "syscall.h"
 #include "i386.h"
 
+
 void task(int x_target, int y_target) {
     /* Tarea */
-
     //breakpoint();
     uint pos = syscall_posicion(-1);
     int x = pos & 0xFF;

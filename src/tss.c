@@ -189,7 +189,7 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		tss_pirata = &tss_jugadorB[index];
 	}
 	init_tss(tss_pirata, (GDT_IDX_CODE_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3) | 0x3, (GDT_IDX_DATA_0 << 3));
-	tss_pirata->esp = CODIGO_BASE + 0x1000;
+	tss_pirata->esp = CODIGO_BASE + 0x1000 - 0xC;
 	tss_pirata->ebp = CODIGO_BASE + 0x1000;
 	tss_pirata->eip = CODIGO_BASE;
 
