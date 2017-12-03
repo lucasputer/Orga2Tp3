@@ -326,7 +326,41 @@ void game_jugador_anotar_punto(jugador_t *j)
 void game_terminar_si_es_hora()
 {
 }
+ 
+void game_matar_pirata(uint tr) {
+	uint id_pirata = tr >> 3;
+	
+	int i = 0;
+	while (i< MAX_CANT_PIRATAS_VIVOS && jugadorA.piratas[i].id != id_pirata)
+		i++;
 
+	if(i < MAX_CANT_PIRATAS_VIVOS) 
+		jugadorA.piratas[i].esta_vivo = 0;
+	
+	i = 0;
+	while (i< MAX_CANT_PIRATAS_VIVOS && jugadorB.piratas[i].id != id_pirata) 
+		i++;
+	
+	if(i < MAX_CANT_PIRATAS_VIVOS) 
+		jugadorB.piratas[i].esta_vivo = 0;
+
+	char hayVivoA = 0;
+	char hayVivoB = 0;
+	for(i = 0 ; i < MAX_CANT_PIRATAS_VIVOS  ; i++){
+		if(jugadorA.piratas[i].esta_vivo == 1)
+			hayVivoA = 1;
+		if(jugadorB.piratas[i].esta_vivo == 1)
+			hayVivoB = 1;
+	}
+
+	if(hayVivoA == 0)
+		set_ultimo_jugador_a(MAX_CANT_PIRATAS_VIVOS);
+
+	if(hayVivoB == 0)
+		set_ultimo_jugador_b(MAX_CANT_PIRATAS_VIVOS);
+
+
+}
 
 #define KB_w        0x11 // 0x91
 #define KB_s        0x1f // 0x9f

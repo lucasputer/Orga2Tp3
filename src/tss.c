@@ -240,3 +240,10 @@ void tss_inicializar_explorador_temp() {
     gdt[GDT_IDX_TSS_EXPLORADOR].g = 0x0;
     gdt[GDT_IDX_TSS_EXPLORADOR].base_31_24 = ((unsigned int)(tss_explorador)>>24);
 }
+
+void tss_matar_tarea() {
+	uint tr_actual = rtr();
+	uint gdt_index = tr_actual >> 3;
+	game_matar_pirata(tr_actual);
+	gdt[gdt_index].p = 0;
+}

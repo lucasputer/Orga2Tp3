@@ -33,4 +33,6 @@ char sched_modo_debugg();
 char sched_juego_pausado();
 void cambiar_modo_debugg();
 void sched_despausar_juego();
+void set_ultimo_jugador_a(uint valor);
+void set_ultimo_jugador_b(uint valor);
 #endif	/* !__SCHED_H__ */
