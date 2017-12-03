@@ -51,6 +51,7 @@ uint sched_proxima_a_ejecutar(){
 	pirata_t * tareas_jugador;
 	uint pos, pos_inicial;
 
+
 	if(ultimo_jugadorA == MAX_CANT_PIRATAS_VIVOS && ultimo_jugadorB == MAX_CANT_PIRATAS_VIVOS){
 		return 0x0070; //idle
 	}
@@ -124,4 +125,12 @@ void sched_pausar_juego(){
 void sched_despausar_juego(){
 	juego_pausado = 0;
 	print(" ", 50 , 0, 0x47);
+}
+
+void set_ultimo_jugador_a(uint valor){
+	ultimo_jugadorA = valor;
+}
+
+void set_ultimo_jugador_b(uint valor){
+	ultimo_jugadorB = valor;
 }

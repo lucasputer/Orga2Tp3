@@ -48,6 +48,10 @@ _isr%1:
     mov eax, %1
     mov ebx, eax
 
+    push ebx
+    call screen_pintar_interrupcion
+    add esp, 4
+
     call sched_modo_debugg
     cmp eax, 0
     je .noPausar
@@ -55,9 +59,6 @@ _isr%1:
     call sched_pausar_juego
 
     .noPausar:
-    push ebx
-    call screen_pintar_interrupcion
-    add esp, 4
 
     call tss_matar_tarea
     
@@ -75,6 +76,10 @@ _isr%1:
     mov eax, %1
     mov ebx, eax
 
+    push ebx
+    call screen_pintar_error
+    add esp, 4
+
     call sched_modo_debugg
     cmp eax, 0
     je .noPausar
@@ -82,9 +87,6 @@ _isr%1:
     call sched_pausar_juego
 
     .noPausar:
-    push ebx
-    call screen_pintar_error
-    add esp, 4
 
     call tss_matar_tarea
     
