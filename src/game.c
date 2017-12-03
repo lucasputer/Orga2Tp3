@@ -178,8 +178,8 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
 
 	if(tipo == 0){
-		game_chequear_botin(jugador,&(jugador->piratas[i]));
 		screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
+		game_chequear_botin(jugador,&(jugador->piratas[i]));
 	}
 
 
@@ -197,6 +197,8 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        for(j=-1; j<2; j++) {
 	        	if(game_posicion_valida(pirata->x + i, pirata->y + j)){
 	        		if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
+	        			screen_pintar_vacio(jugador, pirata->x +i, pirata->y +j);
+	        			jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
 	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
 	        					game_jugador_lanzar_pirata(jugador->index, 1);
@@ -206,11 +208,6 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        			}
 	        		}
 	        		
-	        	}
-
-	        	if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
-	        		screen_pintar_vacio(jugador, pirata->x +i, pirata->y +j);
-	        		jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
 	        	}
 	        }
 	    }		
@@ -226,8 +223,6 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 
 uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
 {	
-	// int x_prev = MAPA_ANCHO;
-	// int y_prev = MAPA_ALTO;
 	int x = 0;
 	int y = 0;
 	game_dir2xy(dir, &x, &y);
@@ -253,15 +248,17 @@ uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
  	if(pirata_actual->es_minero&& jugador->posiciones_exploradas[x][y] == 0)
  		error();
 
+ 	
+ 	int x_prev, y_prev;
+ 	x_prev = pirata_actual->x;
+ 	y_prev = pirata_actual->y;
+ 	pirata_actual->x = x;
+ 	pirata_actual->y = y;
  	// marco como visitadas las nuevas posiciones
  	if(!(pirata_actual-> es_minero)){
  		game_chequear_botin(jugador,pirata_actual);
  	}
- 	screen_pirata_movimiento(jugador, pirata_actual->es_minero, x, y, pirata_actual->x, pirata_actual->y);
- 	// x_prev = pirata_actual->x;
- 	// y_prev = pirata_actual->y;
- 	pirata_actual->x = x;
- 	pirata_actual->y = y;
+ 	screen_pirata_movimiento(jugador, pirata_actual->es_minero, x, y, x_prev, y_prev);
 	
  	mmu_mover_pirata(rcr3(),pirata_actual->x, pirata_actual->y, pirata_actual->es_minero, jugador->index);
 
