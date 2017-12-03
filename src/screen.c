@@ -98,9 +98,9 @@ void screen_pirata_movimiento(jugador_t *jugador, uint tipo,uint x, uint y, uint
         uchar color_prev = color_fondo | C_FG_BLACK;
         screen_pintar(exp, color_prev, y_prev + 1, x_prev);
     }else if (pos_prev == 2){
-        screen_pintar_botin(jugador, x_prev, y_prev);
+        screen_pintar_botin(jugador, x_prev, y_prev + 1);
     }else if (pos_prev == 3){
-        screen_pintar_botin_vacio(jugador, x_prev, y_prev);
+        screen_pintar_botin_vacio(jugador, x_prev, y_prev + 1);
     }
 
 }
