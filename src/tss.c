@@ -189,11 +189,31 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		tss_pirata = &tss_jugadorB[index];
 	}
 	init_tss(tss_pirata, (GDT_IDX_CODE_3 << 3) | 0x3, (GDT_IDX_DATA_3 << 3) | 0x3, (GDT_IDX_DATA_0 << 3));
-	tss_pirata->esp = CODIGO_BASE + 0x1000;
+	tss_pirata->esp = CODIGO_BASE + 0x1000 - 0xC;
 	tss_pirata->ebp = CODIGO_BASE + 0x1000;
 	tss_pirata->eip = CODIGO_BASE;
 
 	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador->direcciones_page_tables);
+	int x, y;
+	game_posicion_pirata_actual(&x, &y);
+
+	uint pos_x = tss_pirata->esp + 0x4;
+	uint pos_y = tss_pirata->esp + 0x8;
+
+	//calcular la posicion en el mapa fisico
+	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((pirata.y * MAPA_ANCHO) + pirata.x)*0x1000; 
+
+	uint actual_cr3 = rcr3();
+	mmu_mapear_pagina(pos_x, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
+	mmu_mapear_pagina(pos_y, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
+	if(rtr() != 0x0070) {
+		((int*)pos_y)[0] = y;
+		((int*)pos_x)[0] = x;
+	}
+	mmu_unmapear_pagina(pos_x, actual_cr3);
+	mmu_unmapear_pagina(pos_y, actual_cr3);
+	//breakpoint();
+	
 
 	uint gdt_index = pirata.id;
 

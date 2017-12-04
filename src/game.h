@@ -72,13 +72,13 @@ void game_chequear_botin(jugador_t *jugador, pirata_t* pirata);
 uint game_valor_tesoro(uint x, uint y);
 pirata_t* game_pirata_en_posicion(uint x, uint y);
 
-uint game_syscall_pirata_posicion(uint id, int idx);
+uint game_syscall_pirata_posicion(uint id_jugador, int indice);
 uint game_syscall_pirata_mover(uint id, direccion key);
 uint game_syscall_manejar(uint syscall, uint param1);
 void game_tick(uint id_pirata);
 void game_terminar_si_es_hora();
 void game_atender_teclado(unsigned char tecla);
 void game_matar_pirata(uint tr);
-
+void game_posicion_pirata_actual(int* x, int* y);
 
 #endif  /* !__GAME_H__ */

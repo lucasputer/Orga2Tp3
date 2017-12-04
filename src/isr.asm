@@ -31,6 +31,7 @@ extern sched_jugador_actual
 extern game_tick
 extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
+extern game_syscall_pirata_posicion
 extern sched_modo_debugg
 extern cambiar_modo_debugg
 extern sched_juego_pausado
@@ -222,9 +223,17 @@ _isr70:
         push eax ; para enviar a la funcion
         call game_syscall_pirata_mover
         add esp, 8
+        jmp .end
     .cavar:
+        jmp .end
     .posicion:
-
+        call sched_jugador_actual
+        push ecx
+        push eax
+        call game_syscall_pirata_posicion
+        add esp, 8
+        jmp .end
+    .end:
     jmp 0x0070:0
     popad  
     iret
