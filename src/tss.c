@@ -200,9 +200,10 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 	if(rtr() != 0x0070) {
 		int x, y;
 		game_posicion_pirata_actual(&x, &y);
+		game_dame_posicion_botin(&x,&y);
 		screen_pintar_posicion(x,y);
 		uint pos_x = tss_pirata->esp + 0x4;
-		uint pos_y = tss_pirata->esp + 0x0;
+		uint pos_y = tss_pirata->esp + 0x8;
 
 		//calcular la posicion en el mapa fisico
 		int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((pirata.y * MAPA_ANCHO) + pirata.x)*0x1000; 
@@ -220,8 +221,8 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		mmu_mapear_pagina(pos_y, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
 		
 		//escribo los valores de x e y
-		*((int*)pos_y) = y;
-		*((int*)pos_x) = x;
+		*((int*)pos_y) = 1;
+		*((int*)pos_x) = 30;
 
 		//vuelvo a mapear las virtuales a las fisicas de la tarea actual
 		mmu_mapear_pagina(pos_x, actual_cr3, (uint)pila_0,1,1);
@@ -283,6 +284,6 @@ void tss_inicializar_explorador_temp() {
 void tss_matar_tarea() {
 	uint tr_actual = rtr();
 	uint gdt_index = tr_actual >> 3;
-	gdt[gdt_index].p = 0;
 	game_matar_pirata(tr_actual);
+	gdt[gdt_index].p = 0;
 }

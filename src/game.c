@@ -320,8 +320,6 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 
 	int x,y;
 
-	breakpoint();
-
 	if(indice == -1){
 		game_posicion_pirata_actual(&x,&y);
 	}else{
@@ -334,6 +332,7 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 		y = jugador->piratas[indice].y;
 	}
 	
+	screen_pintar_posicion(x,y);
 	return (y << 8 | x);
 }
 
@@ -417,4 +416,29 @@ void game_matar_pirata(uint tr) {
 
 void game_atender_teclado(unsigned char tecla)
 {
+}
+
+
+void game_dame_posicion_botin(int *x, int *y){
+	int i,j;
+	int encontro_x = 0;
+	int encontro_y = 0;
+	for(i=-1;i<2;i++) {
+		for(j=-1;j<2;j++) {
+			int b;
+			int nueva_x = *x+i;
+			int nueva_y = *y+j;
+			for(b=0;b<BOTINES_CANTIDAD && (encontro_x == 0 || encontro_y == 0);b++){
+				if(botines[b][0] == nueva_x) {
+					*x = nueva_x;
+					encontro_x = 1;
+				}
+				if(botines[b][1] == nueva_y) {
+					*y = nueva_y;
+					encontro_y = 1;
+				}
+				
+			}
+		}
+	}
 }

@@ -25,6 +25,7 @@ void task(int x_target, int y_target) {
     for(i=y; i < y_target; i++)
         syscall_mover(ABA);
 
+    syscall_posicion(-1);
     while(1) {syscall_cavar();}
 
   while(1) { __asm __volatile("mov $2, %%eax":::"eax"); }
