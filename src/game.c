@@ -321,6 +321,8 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 
 	int x,y;
 
+	breakpoint();
+
 	if(indice == -1){
 		game_posicion_pirata_actual(&x,&y);
 	}else{

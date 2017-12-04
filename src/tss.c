@@ -7,6 +7,7 @@
 
 #include "tss.h"
 #include "mmu.h"
+#include "screen.h"
 
 
 
@@ -194,12 +195,14 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 	tss_pirata->eip = CODIGO_BASE;
 
 	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador->direcciones_page_tables);
-	int x, y;
-	game_posicion_pirata_actual(&x, &y);
+	
 
 	if(rtr() != 0x0070) {
+		int x, y;
+		game_posicion_pirata_actual(&x, &y);
+		screen_pintar_posicion(x,y);
 		uint pos_x = tss_pirata->esp + 0x4;
-		uint pos_y = tss_pirata->esp + 0x8;
+		uint pos_y = tss_pirata->esp + 0x0;
 
 		//calcular la posicion en el mapa fisico
 		int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((pirata.y * MAPA_ANCHO) + pirata.x)*0x1000; 

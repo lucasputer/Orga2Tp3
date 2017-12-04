@@ -291,6 +291,16 @@ void screen_pintar_error(uint intCode, uint errorCode){
     print_hex(errorCode, 8, 29, 0, fondo_rojo_letras_blancas);
     
 }
+
+void screen_pintar_posicion(uint intCode, uint errorCode){
+    print("X: ",0,0,fondo_rojo_letras_blancas);
+    print_dec(intCode, 3, 13, 0, fondo_rojo_letras_blancas);
+    print("Y: ",17,0,fondo_rojo_letras_blancas);
+    print_dec(errorCode, 8, 29, 0, fondo_rojo_letras_blancas);
+    breakpoint();
+    
+}
+
 void screen_pintar_interrupcion(uint intCode){
     print("Interrupcion:",0,0,fondo_rojo_letras_blancas);
     print_dec(intCode, 3, 14, 0, fondo_rojo_letras_blancas);
