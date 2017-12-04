@@ -302,8 +302,7 @@ void screen_pintar_tecla(uint intCode){
     }
 }
 
-void screen_pintar_modo_debugg(uint edi, uint esi, uint ebp, uint esp, uint ebx, uint edx, uint ecx, uint eax,
-    uint pila1, uint pila2, uint pila3, uint pila4, uint pila5){
+void screen_pintar_modo_debugg(uint pila1, uint pila2, uint pila3, uint pila4, uint pila5){
 
     uint id_pirata_actual = rtr() >> 3;
     tss* tss_aux = (tss*)(gdt[id_pirata_actual].base_31_24 << 24 | gdt[id_pirata_actual].base_23_16 << 16 | gdt[id_pirata_actual].base_0_15);
@@ -323,37 +322,37 @@ void screen_pintar_modo_debugg(uint edi, uint esi, uint ebp, uint esp, uint ebx,
         }
     }
 
-
-    
-    
     //linea negra
-    screen_pintar_linea_h(espacio, borde_debug, 7, 25, 30);
-    screen_pintar_linea_h(espacio, borde_debug, 42, 25, 30);
-    screen_pintar_linea_v(espacio, borde_debug, 7, 25, 36);
-    screen_pintar_linea_v(espacio, borde_debug, 7, 55, 36);
+    screen_pintar_rect(espacio, fondo_debug, 8, 26, 34, 28);
 
-    screen_pintar_rect(espacio, fondo_debug, 8, 26, 34, 29);
+    screen_pintar_linea_h(espacio, borde_debug, 7, 25, 29);
+    screen_pintar_linea_h(espacio, C_BG_RED, 8, 26, 28);
+    screen_pintar_linea_h(espacio, C_BG_RED, 40, 26, 28);
+    screen_pintar_linea_h(espacio, borde_debug, 41, 25, 30);
+    screen_pintar_linea_v(espacio, borde_debug, 7, 25, 34);
+    screen_pintar_linea_v(espacio, borde_debug, 7, 54, 34);
+
 
     print("eax", 27, 10, letra_registro);
-    print_hex(eax, 8, 31, 10, letra_valor);
+    print_hex(tss_entry.eax, 8, 31, 10, letra_valor);
 
     print("ebx", 27, 12,letra_registro);
-    print_hex(ebx, 8, 31, 12, letra_valor);
+    print_hex(tss_entry.ebx, 8, 31, 12, letra_valor);
 
     print("ecx", 27, 14,letra_registro);
-    print_hex(ecx, 8, 31, 14, letra_valor);
+    print_hex(tss_entry.ecx, 8, 31, 14, letra_valor);
 
     print("edx", 27, 16,letra_registro);
-    print_hex(edx, 8, 31, 16, letra_valor);
+    print_hex(tss_entry.edx, 8, 31, 16, letra_valor);
 
     print("esi", 27, 18,letra_registro);
-    print_hex(esi, 8, 31, 18, letra_valor);
+    print_hex(tss_entry.esi, 8, 31, 18, letra_valor);
 
     print("edi", 27, 20,letra_registro);
-    print_hex(edi, 8, 31, 20, letra_valor);
+    print_hex(tss_entry.edi, 8, 31, 20, letra_valor);
 
     print("ebp", 27, 22,letra_registro);
-    print_hex(esp, 8, 31, 22, letra_valor);
+    print_hex(tss_entry.esp, 8, 31, 22, letra_valor);
 
     print("eip", 27, 24,letra_registro);
     print_hex(tss_entry.eip, 8, 31, 24, letra_valor);
@@ -377,7 +376,7 @@ void screen_pintar_modo_debugg(uint edi, uint esi, uint ebp, uint esp, uint ebx,
     print_hex(tss_entry.ss, 8, 31, 36, letra_valor);
 
     print("eflags", 27, 38,letra_registro);
-    print_hex(tss_entry.eflags, 8, 35, 38, letra_valor);
+    print_hex(tss_entry.eflags, 8, 34, 38, letra_valor);
 
     print("cr0", 41, 10,letra_registro);
     print_hex(rcr0(), 8, 45, 10, letra_valor);
@@ -392,11 +391,11 @@ void screen_pintar_modo_debugg(uint edi, uint esi, uint ebp, uint esp, uint ebx,
     print_hex(rcr4(), 8, 45, 16, letra_valor);
 
     print("stack", 41, 19,letra_registro);
-    print_hex(pila1, 8, 41, 20, letra_valor);
-    print_hex(pila2, 8, 41, 21, letra_valor);
-    print_hex(pila3, 8, 41, 22, letra_valor);
-    print_hex(pila4, 8, 41, 23, letra_valor);
-    print_hex(pila5, 8, 41, 24, letra_valor);
+    print_hex(pila1, 8, 41, 21, letra_valor);
+    print_hex(pila2, 8, 41, 23, letra_valor);
+    print_hex(pila3, 8, 41, 25, letra_valor);
+    print_hex(pila4, 8, 41, 27, letra_valor);
+    print_hex(pila5, 8, 41, 29, letra_valor);
 }
 
 void screen_despintar_modo_debug(){
