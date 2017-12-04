@@ -243,3 +243,20 @@ void mmu_mover_pirata(uint cr3_tarea_actual, uint x, uint y, uint tipo, uint ind
 	
 
 }
+
+uint dame_fisica(uint virtual, uint cr3){
+
+	pde* pd = ((pde*) cr3);
+
+	uint pde_i = virtual >> 22;
+	uint pte_i = (virtual << 10) >> 22;
+	uint offset = (virtual << 20) >> 20;
+	
+	pte* pt = ((pte*) (pd[pde_i].address << 12));
+
+	uint pagina = pt[pte_i].address << 12;
+
+	uint fisica = pagina + offset;
+
+	return fisica;
+}

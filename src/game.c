@@ -287,10 +287,9 @@ void game_syscall_pirata_cavar()
     }
 
     if(!found){
-    	uint tr = rtr();
-    	game_matar_pirata(tr);
     	if(botines[i][0] == x && botines[i][1] == y && botines[i][2] == 0)
     		screen_pintar_botin_vacio(jugador, x, y);
+    	tss_matar_tarea();
     }else{
     	game_jugador_anotar_punto(jugador);
     	botines[i][2] = botines[i][2] - 1;
@@ -399,8 +398,9 @@ void game_matar_pirata(uint tr) {
 	if(hayVivoB == 0)
 		set_ultimo_jugador_b(MAX_CANT_PIRATAS_VIVOS);
 
+	screen_limpiar_reloj_pirata(id_pirata);
 
-}
+	}
 
 #define KB_w        0x11 // 0x91
 #define KB_s        0x1f // 0x9f
