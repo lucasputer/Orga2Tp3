@@ -75,6 +75,7 @@ pirata_t* game_pirata_en_posicion(uint x, uint y);
 uint game_syscall_pirata_posicion(uint id_jugador, int indice);
 uint game_syscall_pirata_mover(uint id, direccion key);
 uint game_syscall_manejar(uint syscall, uint param1);
+void game_syscall_pirata_cavar();
 void game_tick(uint id_pirata);
 void game_terminar_si_es_hora();
 void game_atender_teclado(unsigned char tecla);

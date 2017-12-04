@@ -201,9 +201,14 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        			jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
 	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
-	        					game_jugador_lanzar_pirata(jugador->index, 1);
-	        					screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
-	        					jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
+	        					if(botines[b][2] > 0){
+	        						game_jugador_lanzar_pirata(jugador->index, 1);
+	        						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
+	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
+	        					}else{
+	        						screen_pintar_botin_vacio(jugador, pirata->x +i, pirata->y +j);
+	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 3;
+	        					}
 	        				}
 	        			}
 	        		}
@@ -259,11 +264,41 @@ uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
     return 0;
 }
 
-uint game_syscall_cavar(uint id)
+void game_syscall_pirata_cavar()
 {
-    // ~ completar ~
+    int x,y;
+    game_posicion_pirata_actual(&x,&y);
 
-	return 0;
+    uint id_jugador = sched_jugador_actual();
+    jugador_t* jugador;
+	if(id_jugador == 0){
+		jugador = &jugadorA;
+	}else{
+		jugador = &jugadorB;
+	}
+
+    int i = 0;
+    int found = 0;
+    while(i < BOTINES_CANTIDAD && !found){
+    	if(botines[i][0] == x && botines[i][1] == y && botines[i][2] > 0){
+    		found = 1;
+    	}else{
+    		i++;
+    	}
+    }
+
+    if(!found){
+    	uint tr = rtr();
+    	game_matar_pirata(tr);
+    	if(botines[i][0] == x && botines[i][1] == y && botines[i][2] == 0)
+    		screen_pintar_botin_vacio(jugador, x, y);
+    }else{
+    	game_jugador_anotar_punto(jugador);
+    	botines[i][2] = botines[i][2] - 1;
+    	if(botines[i][2] == 0){
+    		jugador->posiciones_exploradas[x][y] = 3;
+    	}
+    }
 }
 
 void game_posicion_pirata_actual(int* x, int* y){
@@ -319,6 +354,8 @@ pirata_t* game_pirata_en_posicion(uint x, uint y)
 
 void game_jugador_anotar_punto(jugador_t *j)
 {
+	j->puntos = j->puntos + 1;
+	screen_pintar_interrupcion(j->puntos);
 }
 
 
