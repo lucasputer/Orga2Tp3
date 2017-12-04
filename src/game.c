@@ -355,7 +355,7 @@ pirata_t* game_pirata_en_posicion(uint x, uint y)
 void game_jugador_anotar_punto(jugador_t *j)
 {
 	j->puntos = j->puntos + 1;
-	screen_pintar_interrupcion(j->puntos);
+	screen_pintar_puntaje(j->puntos, j->index);
 }
 
 

@@ -53,20 +53,20 @@ void screen_actualizar_reloj_pirata(uint id_pirata)
     reloj_pirata = (reloj_pirata + 1) % reloj_size;
     char c = reloj[reloj_pirata];
     if(id_pirata <= 8){
-        screen_pintar_reloj_pirata(c, ROJO, id_pirata);
+        screen_pintar_reloj_pirata(c, 0, id_pirata);
     }else{
         id_pirata -= 8;
-        screen_pintar_reloj_pirata(c, AZUL, id_pirata);
+        screen_pintar_reloj_pirata(c, 1, id_pirata);
     }
 }
 
 
-void screen_pintar_reloj_pirata(char c, equipo eq, int posicion){
+void screen_pintar_reloj_pirata(char c, uint id_jugador, int posicion){
     int fila = 48;
     int color = fondo_negro;
     int columna = 0;
     int offset = (posicion - 1)*2;
-    if(eq == ROJO){
+    if(id_jugador == 0){
         color = color | texto_rojo;
         columna = 3 + offset;
     }else{
@@ -197,8 +197,8 @@ void screen_inicializar()
     //lugares disponibles;
     int i;
     for(i = 1; i < 9; i++){
-        screen_pintar_lugar_disponible(ROJO, i);
-        screen_pintar_lugar_disponible(AZUL, i);
+        screen_pintar_lugar_disponible(0, i);
+        screen_pintar_lugar_disponible(1, i);
     }
     print(container_tarea_idle,VIDEO_COLS - container_tarea_idle_offset,49,texto_blanco);
 
@@ -212,24 +212,26 @@ void  screen_pintar_relojes(){
     print(relojes, columna, fila, texto_blanco);
 }
 
-void screen_pintar_lugar_disponible(equipo eq, int posicion){
-    screen_pintar_reloj_pirata('X',eq,posicion);
+void screen_pintar_lugar_disponible(uint id_jugador, int posicion){
+    screen_pintar_reloj_pirata('X',0,posicion);
 }
 
 void screen_pintar_puntajes(){
-    screen_pintar_puntaje("000",0);
-    screen_pintar_puntaje("000",1);
+    screen_pintar_puntaje(0,0);
+    screen_pintar_puntaje(0,1);
 }
 
-void screen_pintar_puntaje(const char * puntaje, uint id_jugador){
+void screen_pintar_puntaje(int puntaje, uint id_jugador){
     uchar color = texto_blanco;
+    int start = 34;
     if (id_jugador == 0){
         color =  color | fondo_rojo;
-        print(puntaje,34,47,color);
+        
     }else{
         color = color | fondo_azul;
-        print(puntaje,41,47,color);
+        start = 41;
     }
+    print_dec(puntaje,3, start, 47, color);
 }
 
 uchar screen_valor_actual(uint fila, uint columna)
