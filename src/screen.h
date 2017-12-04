@@ -65,6 +65,7 @@ void screen_pintar_botin(jugador_t *j, uint x, uint y);
 void screen_pintar_botin_vacio(jugador_t *j, uint x, uint y);
 void screen_pintar_vacio(jugador_t *j, uint x, uint y);
 void screen_borrar_pirata(pirata_t* pirata);
+void screen_pintar_ganador(uint ganador);
 
 void screen_actualizar_posicion_mapa(uint x, uint y);
 void screen_stop_game_show_winner(jugador_t *j);

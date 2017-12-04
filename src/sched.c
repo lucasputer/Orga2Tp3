@@ -18,6 +18,7 @@ void sched_inicializar(jugador_t *j_a, jugador_t *j_b){
 	jugador_actual = 0;
 	modo_debugg = 0;
 	juego_pausado = 0;
+	juego_terminado = 0;
 
 	indice_tarea_actual = SCHED_SIN_TAREAS;
 
@@ -53,11 +54,11 @@ uint sched_jugador_actual(){
 uint sched_proxima_a_ejecutar(){
 	pirata_t * tareas_jugador;
 	uint pos, pos_inicial;
+	game_terminar_si_es_hora();
 
 
-	if(ultimo_jugadorA == MAX_CANT_PIRATAS_VIVOS && ultimo_jugadorB == MAX_CANT_PIRATAS_VIVOS){
+	if(ultimo_jugadorA == MAX_CANT_PIRATAS_VIVOS && ultimo_jugadorB == MAX_CANT_PIRATAS_VIVOS)
 		return 0x0070; //idle
-	}
 
 	if(jugador_actual == 0){
 		if(ultimo_jugadorB != MAX_CANT_PIRATAS_VIVOS){
@@ -106,7 +107,7 @@ char sched_modo_debugg(){
 }
 
 char sched_juego_pausado(){
-	return juego_pausado;
+	return (juego_pausado || juego_terminado);
 }
 
 void cambiar_modo_debugg(){
@@ -129,6 +130,10 @@ void sched_despausar_juego(){
 	juego_pausado = 0;
 	screen_despintar_modo_debug();
 	print(" ", 50 , 0, 0x47);
+}
+
+void sched_terminar_juego(){
+	juego_terminado = 1;
 }
 
 void set_ultimo_jugador_a(uint valor){
