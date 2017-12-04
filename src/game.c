@@ -30,7 +30,7 @@ uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
 
 jugador_t jugadorA;
 jugador_t jugadorB;
-uint tiempo_restante = TIEMPO_INICIAL;
+uint tiempo_restante = MAX_SIN_CAMBIOS;
 
 void* error()
 {
@@ -338,7 +338,7 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 void game_jugador_anotar_punto(jugador_t *j)
 {
 	j->puntos = j->puntos + 1;
-	tiempo_restante = TIEMPO_INICIAL;
+	tiempo_restante = MAX_SIN_CAMBIOS;
 	screen_pintar_puntaje(j->puntos, j->index);
 }
 

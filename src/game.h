@@ -19,8 +19,6 @@ typedef enum direccion_e { ARR = 0x4, ABA = 0x7, DER = 0xA, IZQ = 0xD} direccion
 #define MAPA_ANCHO                       80
 #define MAPA_ALTO                        44
 
-#define TIEMPO_INICIAL                   100
-
 #define BOTINES_CANTIDAD 8
 
 
