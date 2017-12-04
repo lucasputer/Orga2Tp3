@@ -64,7 +64,6 @@ _isr%1:
     add esp, 4
     pop eax
     pushad
-    xchg bx, bx
     call screen_pintar_modo_debugg
     popad
 
@@ -101,7 +100,6 @@ _isr%1:
     add esp, 4
     pop eax
     pushad
-    xchg bx, bx
     call screen_pintar_modo_debugg
     popad
 
