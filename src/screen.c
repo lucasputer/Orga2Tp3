@@ -217,13 +217,13 @@ void screen_pintar_lugar_disponible(equipo eq, int posicion){
 }
 
 void screen_pintar_puntajes(){
-    screen_pintar_puntaje("000",ROJO);
-    screen_pintar_puntaje("000",AZUL);
+    screen_pintar_puntaje("000",0);
+    screen_pintar_puntaje("000",1);
 }
 
-void screen_pintar_puntaje(const char * puntaje, equipo equipo){
+void screen_pintar_puntaje(const char * puntaje, uint id_jugador){
     uchar color = texto_blanco;
-    if (equipo == ROJO){
+    if (id_jugador == 0){
         color =  color | fondo_rojo;
         print(puntaje,34,47,color);
     }else{

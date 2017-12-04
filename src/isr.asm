@@ -32,6 +32,7 @@ extern game_tick
 extern game_jugador_lanzar_pirata
 extern game_syscall_pirata_mover
 extern game_syscall_pirata_posicion
+extern game_syscall_pirata_cavar
 extern sched_modo_debugg
 extern cambiar_modo_debugg
 extern sched_juego_pausado
@@ -209,6 +210,7 @@ _isr70:
         add esp, 8
         jmp .end
     .cavar:
+        call game_syscall_pirata_cavar
         jmp .end
     .posicion:
         call sched_jugador_actual
