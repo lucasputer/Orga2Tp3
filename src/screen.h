@@ -72,6 +72,7 @@ void screen_stop_game_show_winner(jugador_t *j);
 
 void screen_pintar_modo_debug();
 void screen_despintar_modo_debug();
+void screen_pintar_posicion(uint intCode, uint errorCode);
 
 
 #endif  /* !__SCREEN_H__ */
