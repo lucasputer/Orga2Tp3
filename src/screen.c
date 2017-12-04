@@ -55,10 +55,10 @@ void screen_actualizar_reloj_pirata(uint id_pirata)
     char c = reloj[estadoReloj];
     estadoRelojes[id_pirata-1] = estadoReloj;
     if(id_pirata <= 8){
-        screen_pintar_reloj_pirata(c, ROJO, id_pirata);
+        screen_pintar_reloj_pirata(c, 0, id_pirata);
     }else{
         id_pirata -= 8;
-        screen_pintar_reloj_pirata(c, AZUL, id_pirata);
+        screen_pintar_reloj_pirata(c, 1, id_pirata);
     }
 }
 
@@ -210,10 +210,11 @@ void screen_inicializar()
     
     //lugares disponibles;
     int i;
-    for(i = 1; i < 9; i++){
+    for(i = 1; i <= 8; i++){
         screen_pintar_lugar_disponible(0, i);
         screen_pintar_lugar_disponible(1, i);
     }
+
     print(container_tarea_idle,VIDEO_COLS - container_tarea_idle_offset,49,texto_blanco);
 
 }
@@ -227,7 +228,7 @@ void  screen_pintar_relojes(){
 }
 
 void screen_pintar_lugar_disponible(uint id_jugador, int posicion){
-    screen_pintar_reloj_pirata('X',0,posicion);
+    screen_pintar_reloj_pirata('X',id_jugador,posicion);
 }
 
 void screen_pintar_puntajes(){
