@@ -8,12 +8,14 @@ definicion de funciones del scheduler
 #include "screen.h"
 #include "game.h"
 #include "i386.h"
+#include "tss.h"
 
 
 extern jugador_t jugadorA, jugadorB;
 
 
 static ca (*p)[VIDEO_COLS] = (ca (*)[VIDEO_COLS]) VIDEO;
+ca ptemp[VIDEO_FILS][VIDEO_COLS];
 
 const uchar espacio = 32;
 const uchar fondo_negro = 0x00;
@@ -187,6 +189,11 @@ void screen_inicializar()
     //puntajes iniciales
     screen_pintar_puntajes();
     screen_pintar_relojes();
+    
+    //lugares para modo debug y pausa
+    print(" ", 47 , 0, 0x47);
+    print(" ", 50 , 0, 0x47);
+    
     //lugares disponibles;
     int i;
     for(i = 1; i < 9; i++){
@@ -292,5 +299,112 @@ void screen_pintar_tecla(uint intCode){
         char* s = "";
         s[0] = teclado[intCode];
         print(s,0, 0, fondo_rojo_letras_blancas);
+    }
+}
+
+void screen_pintar_modo_debugg(uint edi, uint esi, uint ebp, uint esp, uint ebx, uint edx, uint ecx, uint eax,
+    uint pila1, uint pila2, uint pila3, uint pila4, uint pila5){
+
+    uint id_pirata_actual = rtr() >> 3;
+    tss* tss_aux = (tss*)(gdt[id_pirata_actual].base_31_24 << 24 | gdt[id_pirata_actual].base_23_16 << 16 | gdt[id_pirata_actual].base_0_15);
+
+
+    tss tss_entry = *tss_aux;
+    uchar fondo_debug = C_BG_LIGHT_GREY;
+    uchar borde_debug = fondo_negro;
+    uchar letra_registro = C_BG_LIGHT_GREY | C_FG_BLACK;
+    uchar letra_valor = C_BG_LIGHT_GREY | C_FG_WHITE;
+
+    int fila, columna;
+    for(fila = 0; fila < VIDEO_FILS ; fila++){
+        for(columna = 0 ; columna < VIDEO_COLS ; columna++){
+            ptemp[fila][columna].c = p[fila][columna].c;
+            ptemp[fila][columna].a = p[fila][columna].a;
+        }
+    }
+
+
+    
+    
+    //linea negra
+    screen_pintar_linea_h(espacio, borde_debug, 7, 25, 30);
+    screen_pintar_linea_h(espacio, borde_debug, 42, 25, 30);
+    screen_pintar_linea_v(espacio, borde_debug, 7, 25, 36);
+    screen_pintar_linea_v(espacio, borde_debug, 7, 55, 36);
+
+    screen_pintar_rect(espacio, fondo_debug, 8, 26, 34, 29);
+
+    print("eax", 27, 10, letra_registro);
+    print_hex(eax, 8, 31, 10, letra_valor);
+
+    print("ebx", 27, 12,letra_registro);
+    print_hex(ebx, 8, 31, 12, letra_valor);
+
+    print("ecx", 27, 14,letra_registro);
+    print_hex(ecx, 8, 31, 14, letra_valor);
+
+    print("edx", 27, 16,letra_registro);
+    print_hex(edx, 8, 31, 16, letra_valor);
+
+    print("esi", 27, 18,letra_registro);
+    print_hex(esi, 8, 31, 18, letra_valor);
+
+    print("edi", 27, 20,letra_registro);
+    print_hex(edi, 8, 31, 20, letra_valor);
+
+    print("ebp", 27, 22,letra_registro);
+    print_hex(esp, 8, 31, 22, letra_valor);
+
+    print("eip", 27, 24,letra_registro);
+    print_hex(tss_entry.eip, 8, 31, 24, letra_valor);
+
+    print("cs", 28, 26,letra_registro);
+    print_hex(tss_entry.cs, 8, 31, 26, letra_valor);
+
+    print("ds", 28, 28,letra_registro);
+    print_hex(tss_entry.ds, 8, 31, 28, letra_valor);
+
+    print("es", 28, 30,letra_registro);
+    print_hex(tss_entry.cs, 8, 31, 30, letra_valor);
+
+    print("fs", 28, 32,letra_registro);
+    print_hex(tss_entry.fs, 8, 31, 32, letra_valor);
+
+    print("gs", 28, 34,letra_registro);
+    print_hex(tss_entry.gs, 8, 31, 34, letra_valor);
+
+    print("ss", 28, 36,letra_registro);
+    print_hex(tss_entry.ss, 8, 31, 36, letra_valor);
+
+    print("eflags", 27, 38,letra_registro);
+    print_hex(tss_entry.eflags, 8, 35, 38, letra_valor);
+
+    print("cr0", 41, 10,letra_registro);
+    print_hex(rcr0(), 8, 45, 10, letra_valor);
+
+    print("cr2", 41, 12,letra_registro);
+    print_hex(rcr2(), 8, 45, 12, letra_valor);
+
+    print("cr3", 41, 14,letra_registro);
+    print_hex(tss_entry.cr3, 8, 45, 14, letra_valor);
+
+    print("cr4", 41, 16,letra_registro);
+    print_hex(rcr4(), 8, 45, 16, letra_valor);
+
+    print("stack", 41, 19,letra_registro);
+    print_hex(pila1, 8, 41, 20, letra_valor);
+    print_hex(pila2, 8, 41, 21, letra_valor);
+    print_hex(pila3, 8, 41, 22, letra_valor);
+    print_hex(pila4, 8, 41, 23, letra_valor);
+    print_hex(pila5, 8, 41, 24, letra_valor);
+}
+
+void screen_despintar_modo_debug(){
+    int fila, columna;
+    for(fila = 0; fila < VIDEO_FILS ; fila++){
+        for(columna = 0 ; columna < VIDEO_COLS ; columna++){
+            p[fila][columna].c = ptemp[fila][columna].c;
+            p[fila][columna].a = ptemp[fila][columna].a;
+        }
     }
 }

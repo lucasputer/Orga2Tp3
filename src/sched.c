@@ -124,6 +124,7 @@ void sched_pausar_juego(){
 
 void sched_despausar_juego(){
 	juego_pausado = 0;
+	screen_despintar_modo_debug();
 	print(" ", 50 , 0, 0x47);
 }
 
