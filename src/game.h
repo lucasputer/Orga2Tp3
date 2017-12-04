@@ -19,6 +19,8 @@ typedef enum direccion_e { ARR = 0x4, ABA = 0x7, DER = 0xA, IZQ = 0xD} direccion
 #define MAPA_ANCHO                       80
 #define MAPA_ALTO                        44
 
+#define TIEMPO_INICIAL                   100
+
 #define BOTINES_CANTIDAD 8
 
 
@@ -60,7 +62,6 @@ pirata_t* id_pirata2pirata(uint id);
 void game_pirata_inicializar(pirata_t *pirata, jugador_t *j, uint id, uint tipo);
 void game_pirata_erigir(pirata_t *pirata, jugador_t *j, uint tipo);
 void game_explorador_visitar_posiciones(jugador_t* jugador, uint x, uint y);
-void game_pirata_exploto(uint id);
 void game_inicializar();
 uint game_posicion_valida(int x, int y);
 
@@ -74,7 +75,6 @@ pirata_t* game_pirata_en_posicion(uint x, uint y);
 
 uint game_syscall_pirata_posicion(uint id_jugador, int indice);
 uint game_syscall_pirata_mover(uint id, direccion key);
-uint game_syscall_manejar(uint syscall, uint param1);
 void game_syscall_pirata_cavar();
 void game_tick(uint id_pirata);
 void game_terminar_si_es_hora();

@@ -295,6 +295,21 @@ void screen_pintar_interrupcion(uint intCode){
     print("Interrupcion:",0,0,fondo_rojo_letras_blancas);
     print_dec(intCode, 3, 14, 0, fondo_rojo_letras_blancas);
 }
+void screen_pintar_ganador(uint ganador){
+    char color = fondo_rojo_letras_blancas;
+    if(ganador){
+        color = fondo_azul | texto_blanco;
+    }
+
+    screen_pintar_linea_h(espacio, fondo_negro, 16, 25, 30);
+    screen_pintar_linea_h(espacio, fondo_negro, 32, 25, 30);
+    screen_pintar_linea_v(espacio, fondo_negro, 16, 25, 17);
+    screen_pintar_linea_v(espacio, fondo_negro, 16, 55, 17);
+
+    screen_pintar_rect(espacio, color, 17, 26, 15, 29);
+
+    print("GANADOR",36,24,color);
+}
 void screen_pintar_tecla(uint intCode){
     if(intCode > 53){
         intCode -= 130;

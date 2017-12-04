@@ -30,8 +30,7 @@ uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
 
 jugador_t jugadorA;
 jugador_t jugadorB;
-
-
+uint tiempo_restante = TIEMPO_INICIAL;
 
 void* error()
 {
@@ -336,25 +335,11 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 	return (y << 8 | x);
 }
 
-uint game_syscall_manejar(uint syscall, uint param1)
-{
-    // ~ completar ~
-    return 0;
-}
-
-void game_pirata_exploto(uint id)
-{
-}
-
-pirata_t* game_pirata_en_posicion(uint x, uint y)
-{
-	return NULL;
-}
-
 
 void game_jugador_anotar_punto(jugador_t *j)
 {
 	j->puntos = j->puntos + 1;
+	tiempo_restante = TIEMPO_INICIAL;
 	screen_pintar_puntaje(j->puntos, j->index);
 }
 
@@ -362,6 +347,24 @@ void game_jugador_anotar_punto(jugador_t *j)
 
 void game_terminar_si_es_hora()
 {
+	int i = 0, j = 0;
+	tiempo_restante--;
+	while(i < BOTINES_CANTIDAD){
+		if(botines[i][2] != 0){
+			i = BOTINES_CANTIDAD;
+		}else{
+			i++;
+		}
+		j++;
+	}
+	if(i == j || tiempo_restante == 0){
+		int ganador = 0;
+		if(jugadorA.puntos < jugadorB.puntos)
+			ganador = 1;
+
+		screen_pintar_ganador(ganador);
+		sched_terminar_juego();
+	}
 }
  
 void game_matar_pirata(uint tr) {
