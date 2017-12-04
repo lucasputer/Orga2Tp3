@@ -68,4 +68,5 @@ void mmu_mapear_pagina(unsigned int virtual, unsigned int cr3, unsigned int fisi
 void mmu_unmapear_pagina(unsigned int virtual, unsigned int cr3);
 int* damePosicionAledanias(int base, int x, int y);
 void mmu_mover_pirata(uint cr3_tarea_actual, uint pos_x, uint pos_y, uint tipo, uint index_jugador);
+uint dame_fisica(uint virtual, uint cr3);
 #endif	/* !__MMU_H__ */

@@ -23,8 +23,6 @@ typedef struct ca_s {
     unsigned char a;
 } ca;
 
-typedef enum { ROJO, AZUL } equipo;
-
 struct pirata_t;
 typedef struct pirata_t pirata_t;
 
@@ -43,9 +41,9 @@ void screen_pintar_linea_h(unsigned char c, unsigned char color, int fila, int c
 void screen_pintar_linea_v(unsigned char c, unsigned char color, int fila, int columna, int alto);
 void screen_inicializar();
 void screen_pintar_puntajes();
-void screen_pintar_puntaje(const char * puntaje, equipo equipo);
+void screen_pintar_puntaje(int puntaje, uint id_jugador);
 void screen_pintar_relojes();
-void screen_pintar_lugar_disponible(equipo eq, int posicion);
+void screen_pintar_lugar_disponible(uint id_jugador, int posicion);
 
 // void screen_pintar_error(const int intCode, const int errorCode);
 void screen_pintar_error(uint intCode, uint errorCode);
@@ -59,7 +57,7 @@ void screen_limpiar_reloj_pirata(uint id_pirata);
 unsigned char screen_color_jugador(jugador_t *j);
 unsigned char screen_caracter_pirata(unsigned int tipo);
 void screen_pirata_movimiento(jugador_t *j, uint tipo, uint x, uint y, uint x_prev, uint y_prev);
-void screen_pintar_reloj_pirata(char c, equipo eq, int posicion);
+void screen_pintar_reloj_pirata(char c, uint id_jugador, int posicion);
 void screen_pintar_reloj_piratas(jugador_t *j);
 void screen_pintar_relojes();
 uint screen_posicion_valida(int x, int y);
