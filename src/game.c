@@ -30,7 +30,7 @@ uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
 
 jugador_t jugadorA;
 jugador_t jugadorB;
-uint tiempo_restante = TIEMPO_INICIAL;
+uint tiempo_restante = MAX_SIN_CAMBIOS;
 
 void* error()
 {
@@ -141,8 +141,21 @@ void game_pirata_relanzar(pirata_t *pirata, jugador_t *j, uint tipo)
 {
 }
 
+void game_jugador_lanzar_explorador(int j)
+{	
+	jugador_t* jugador = &jugadorA;
+	if(j == 1){
+		jugador = &jugadorB;
+	}
+	game_jugador_lanzar_pirata(j, 0,jugador->x_puerto, jugador->y_puerto);
+}
 
-void game_jugador_lanzar_pirata(int j, uint tipo)
+void game_jugador_lanzar_minero(int j, int x, int y)
+{
+	game_jugador_lanzar_pirata(j, 1, x, y);
+}
+
+void game_jugador_lanzar_pirata(int j, uint tipo, int x, int y)
 {
 	jugador_t *jugador;
 	if(j == 0){
@@ -174,7 +187,7 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 
 	game_pirata_inicializar(&(jugador->piratas[i]), jugador, id, tipo);
 	//lanzar la tarea
-	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
+	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i],x,y);
 
 	if(tipo == 0){
 		game_chequear_botin(jugador,&(jugador->piratas[i]));
@@ -201,8 +214,8 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
 	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
 	        					if(botines[b][2] > 0){
-	        						game_jugador_lanzar_pirata(jugador->index, 1);
-	        						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
+	        						game_jugador_lanzar_minero(jugador->index, pirata->x + i, pirata->y + j);
+	        						screen_pintar_botin(jugador, pirata->x + i, pirata->y + j);
 	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
 	        					}else{
 	        						screen_pintar_botin_vacio(jugador, pirata->x +i, pirata->y +j);
@@ -338,7 +351,7 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 void game_jugador_anotar_punto(jugador_t *j)
 {
 	j->puntos = j->puntos + 1;
-	tiempo_restante = TIEMPO_INICIAL;
+	tiempo_restante = MAX_SIN_CAMBIOS;
 	screen_pintar_puntaje(j->puntos, j->index);
 }
 

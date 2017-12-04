@@ -19,8 +19,6 @@ typedef enum direccion_e { ARR = 0x4, ABA = 0x7, DER = 0xA, IZQ = 0xD} direccion
 #define MAPA_ANCHO                       80
 #define MAPA_ALTO                        44
 
-#define TIEMPO_INICIAL                   100
-
 #define BOTINES_CANTIDAD 8
 
 
@@ -66,7 +64,9 @@ void game_inicializar();
 uint game_posicion_valida(int x, int y);
 
 void game_jugador_inicializar(jugador_t *j);
-void game_jugador_lanzar_pirata(int j, uint tipo);
+void game_jugador_lanzar_explorador(int j);
+void game_jugador_lanzar_minero(int j, int x, int y);
+void game_jugador_lanzar_pirata(int j, uint tipo, int x, int y);
 void game_jugador_anotar_punto(jugador_t *j);
 void game_chequear_botin(jugador_t *jugador, pirata_t* pirata);
 

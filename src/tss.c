@@ -174,7 +174,7 @@ void init_tss(tss* new_tss, int cs, int ds, int ss0) {
 }
 
 
-void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t pirata){
+void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t pirata, int x, int y){
 	int tarea =  0x10000; //la primer tarea esta en esa posicion
 	if(jugador->index == 1){
 		tarea += 0x2000; //donde se encuentra la primer tarea del jugador b
@@ -194,8 +194,6 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 	tss_pirata->eip = CODIGO_BASE;
 
 	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador->direcciones_page_tables);
-	int x, y;
-	game_posicion_pirata_actual(&x, &y);
 
 	if(rtr() != 0x0070) {
 		uint pos_x = tss_pirata->esp + 0x4;
@@ -223,7 +221,6 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		//vuelvo a mapear las virtuales a las fisicas de la tarea actual
 		mmu_mapear_pagina(pos_x, actual_cr3, (uint)pila_0,1,1);
 		mmu_mapear_pagina(pos_y, actual_cr3, (uint)pila_1,1,1);
-		//breakpoint();
 
 		//reescribo los valores que quizas fueron modificados po
 		//((int*)pos_y)[0] = dato_1;
