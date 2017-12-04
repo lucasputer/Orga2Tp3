@@ -33,6 +33,7 @@ const uint nombre_grupo_len = 19;
 const char reloj[] = "|/-\\";
 const char* container_tarea_idle = "( )";
 const uint container_tarea_idle_offset = 5;
+int estadoRelojes[16];
 #define reloj_size 4
 
 
@@ -49,9 +50,22 @@ void screen_actualizar_reloj_global()
 void screen_actualizar_reloj_pirata(uint id_pirata)
 {   
     id_pirata = id_pirata - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A + 1;
-    static uint reloj_pirata = 0;
-    reloj_pirata = (reloj_pirata + 1) % reloj_size;
-    char c = reloj[reloj_pirata];
+
+    int estadoReloj = (estadoRelojes[id_pirata-1] + 1) % reloj_size;
+    char c = reloj[estadoReloj];
+    estadoRelojes[id_pirata-1] = estadoReloj;
+    if(id_pirata <= 8){
+        screen_pintar_reloj_pirata(c, ROJO, id_pirata);
+    }else{
+        id_pirata -= 8;
+        screen_pintar_reloj_pirata(c, AZUL, id_pirata);
+    }
+}
+
+void screen_limpiar_reloj_pirata(uint id_pirata)
+{   
+    id_pirata = id_pirata - GDT_IDX_TSS_PRIMER_TAREA_JUGADOR_A + 1;
+    char c = 'X';
     if(id_pirata <= 8){
         screen_pintar_reloj_pirata(c, ROJO, id_pirata);
     }else{

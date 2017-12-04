@@ -264,6 +264,6 @@ void tss_inicializar_explorador_temp() {
 void tss_matar_tarea() {
 	uint tr_actual = rtr();
 	uint gdt_index = tr_actual >> 3;
-	game_matar_pirata(tr_actual);
 	gdt[gdt_index].p = 0;
+	game_matar_pirata(tr_actual);
 }
