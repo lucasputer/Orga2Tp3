@@ -79,6 +79,6 @@ void game_tick(uint id_pirata);
 void game_terminar_si_es_hora();
 void game_atender_teclado(unsigned char tecla);
 void game_matar_pirata(uint tr);
-
+void game_posicion_pirata_actual(int* x, int* y);
 
 #endif  /* !__GAME_H__ */

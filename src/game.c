@@ -178,9 +178,9 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
 
 	if(tipo == 0){
-		screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
 		game_chequear_botin(jugador,&(jugador->piratas[i]));
 	}
+	screen_pirata_movimiento(jugador, tipo,jugador->piratas[i].y, jugador->piratas[i].x, MAPA_ALTO, MAPA_ANCHO);
 
 
 	sched_inicializar_jugador(j);
