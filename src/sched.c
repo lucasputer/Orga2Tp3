@@ -30,6 +30,9 @@ uint sched_tick(){
 	if(proxima != 0x0070){
 		indice_tarea_actual = proxima >> 3;
 	}
+	else{
+		indice_tarea_actual = SCHED_SIN_TAREAS;
+	}
 	game_tick(indice_tarea_actual);
 
 	return  proxima;
@@ -129,6 +132,7 @@ void sched_despausar_juego(){
 }
 
 void set_ultimo_jugador_a(uint valor){
+	breakpoint();
 	ultimo_jugadorA = valor;
 }
 
