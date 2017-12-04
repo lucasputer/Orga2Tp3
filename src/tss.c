@@ -197,22 +197,38 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 	int x, y;
 	game_posicion_pirata_actual(&x, &y);
 
-	uint pos_x = tss_pirata->esp + 0x4;
-	uint pos_y = tss_pirata->esp + 0x8;
-
-	//calcular la posicion en el mapa fisico
-	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((pirata.y * MAPA_ANCHO) + pirata.x)*0x1000; 
-
-	uint actual_cr3 = rcr3();
-	mmu_mapear_pagina(pos_x, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
-	mmu_mapear_pagina(pos_y, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
 	if(rtr() != 0x0070) {
-		((int*)pos_y)[0] = y;
-		((int*)pos_x)[0] = x;
+		uint pos_x = tss_pirata->esp + 0x4;
+		uint pos_y = tss_pirata->esp + 0x8;
+
+		//calcular la posicion en el mapa fisico
+		int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((pirata.y * MAPA_ANCHO) + pirata.x)*0x1000; 
+
+		//primero tengo que guardarme los valores que haya en la pila actual.
+		uint actual_cr3 = rcr3();
+		int* pila_0 = (int*)dame_fisica(pos_x, actual_cr3);
+		//int dato_0 = (*pila_0);
+
+		int* pila_1 = (int*)dame_fisica(pos_y, actual_cr3);
+		//int dato_1 = (*pila_1);
+
+		//ahora me mapeo las ultimas posiciones de la pila a las posiciones fisicas de la nueva tarea
+		mmu_mapear_pagina(pos_x, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
+		mmu_mapear_pagina(pos_y, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
+		
+		//escribo los valores de x e y
+		*((int*)pos_y) = y;
+		*((int*)pos_x) = x;
+
+		//vuelvo a mapear las virtuales a las fisicas de la tarea actual
+		mmu_mapear_pagina(pos_x, actual_cr3, (uint)pila_0,1,1);
+		mmu_mapear_pagina(pos_y, actual_cr3, (uint)pila_1,1,1);
+		//breakpoint();
+
+		//reescribo los valores que quizas fueron modificados po
+		//((int*)pos_y)[0] = dato_1;
+		//((int*)pos_x)[0] = dato_0;
 	}
-	mmu_unmapear_pagina(pos_x, actual_cr3);
-	mmu_unmapear_pagina(pos_y, actual_cr3);
-	//breakpoint();
 	
 
 	uint gdt_index = pirata.id;
