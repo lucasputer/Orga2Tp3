@@ -19,7 +19,7 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 #define POS_INIT_B_Y          MAPA_ALTO - 2
 
 #define CANT_POSICIONES_VISTAS            9
-#define MAX_SIN_CAMBIOS                 999
+#define MAX_SIN_CAMBIOS                9999
 
 //pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
@@ -287,8 +287,17 @@ void game_syscall_pirata_cavar()
     }
 
     if(!found){
-    	if(botines[i][0] == x && botines[i][1] == y && botines[i][2] == 0)
-    		screen_pintar_botin_vacio(jugador, x, y);
+    	i = 0;
+    	found = 0;
+	    while(i < BOTINES_CANTIDAD && !found){
+	    	if(botines[i][0] == x && botines[i][1] == y && botines[i][2] == 0){
+	    		screen_pintar_botin_vacio(jugador, x, y);
+	    		found = 1;
+	    	}
+	    	else{
+	    		i++;
+	    	}
+	    }
     	tss_matar_tarea();
     }else{
     	game_jugador_anotar_punto(jugador);
