@@ -49,6 +49,9 @@ typedef struct jugador_t
     // coordenadas puerto, posiciones exploradas, mineros pendientes, etc
 } jugador_t;
 
+    int posiciones_exploradas[2][MAPA_ANCHO][MAPA_ALTO];
+
+
 
 extern jugador_t jugadorA, jugadorB;
 

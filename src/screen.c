@@ -109,7 +109,7 @@ void screen_pirata_movimiento(jugador_t *jugador, uint tipo,uint x, uint y, uint
     }
     screen_pintar(exp, color_act, y, x);
 
-    int pos_prev = jugador->posiciones_exploradas[x_prev][y_prev];
+    int pos_prev = posiciones_exploradas[jugador->index][x_prev][y_prev];
     if (x_prev < MAPA_ANCHO && y_prev < MAPA_ALTO && pos_prev == 1){
         uchar color_prev = color_fondo | C_FG_BLACK;
         screen_pintar(exp, color_prev, y_prev + 1, x_prev);

@@ -208,18 +208,19 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	    for(i=-1; i<2; i++) {
 	        for(j=-1; j<2; j++) {
 	        	if(game_posicion_valida(pirata->x + i, pirata->y + j)){
-	        		if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
+	        		int pos = posiciones_exploradas[jugador->index][pirata->x + i][pirata->y + j];
+	        		if( pos != 1 && pos != 2 && pos != 3){
 	        			screen_pintar_vacio(jugador, pirata->x +i, pirata->y +j);
-	        			jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
+	        			posiciones_exploradas[jugador->index][pirata->x + i][pirata->y + j] = 1;
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
 	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
 	        					if(botines[b][2] > 0){
 	        						game_jugador_lanzar_minero(jugador->index, pirata->x + i, pirata->y + j);
 	        						screen_pintar_botin(jugador, pirata->x + i, pirata->y + j);
-	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
+	        						posiciones_exploradas[jugador->index][pirata->x + i][pirata->y + j] = 2;
 	        					}else{
 	        						screen_pintar_botin_vacio(jugador, pirata->x +i, pirata->y +j);
-	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 3;
+	        						posiciones_exploradas[jugador->index][pirata->x + i][pirata->y + j] = 3;
 	        					}
 	        				}
 	        			}
@@ -256,7 +257,7 @@ uint game_syscall_pirata_mover(uint id_jugador, direccion dir)
  	if(!game_posicion_valida(x,y))
  		error();
 
- 	if(pirata_actual->es_minero&& jugador->posiciones_exploradas[x][y] == 0)
+ 	if(pirata_actual->es_minero&& posiciones_exploradas[jugador->index][x][y] == 0)
  		error();
 
  	
@@ -316,7 +317,7 @@ void game_syscall_pirata_cavar()
     	game_jugador_anotar_punto(jugador);
     	botines[i][2] = botines[i][2] - 1;
     	if(botines[i][2] == 0){
-    		jugador->posiciones_exploradas[x][y] = 3;
+    		posiciones_exploradas[jugador->index][x][y] = 3;
     	}
     }
 }
