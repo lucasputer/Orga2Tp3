@@ -330,8 +330,6 @@ uint game_syscall_pirata_posicion(uint id_jugador, int indice)
 		x = jugador->piratas[indice].x;
 		y = jugador->piratas[indice].y;
 	}
-	
-	screen_pintar_posicion(x,y);
 	return (y << 8 | x);
 }
 

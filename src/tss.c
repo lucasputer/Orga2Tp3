@@ -201,7 +201,6 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		int x, y;
 		game_posicion_pirata_actual(&x, &y);
 		game_dame_posicion_botin(&x,&y);
-		screen_pintar_posicion(x,y);
 		uint pos_x = tss_pirata->esp + 0x4;
 		uint pos_y = tss_pirata->esp + 0x8;
 
