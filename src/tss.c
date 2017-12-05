@@ -221,8 +221,8 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 		mmu_mapear_pagina(pos_y, actual_cr3, dir_fisica_posicion_en_mapa, 1, 1);
 		
 		//escribo los valores de x e y
-		*((int*)pos_y) = 1;
-		*((int*)pos_x) = 30;
+		*((int*)pos_y) = y-1;
+		*((int*)pos_x) = x+2;
 
 		//vuelvo a mapear las virtuales a las fisicas de la tarea actual
 		mmu_mapear_pagina(pos_x, actual_cr3, (uint)pila_0,1,1);
