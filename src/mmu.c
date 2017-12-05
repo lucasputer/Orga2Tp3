@@ -125,7 +125,7 @@ void mmu_inicializar_dir_kernel() {
 	}
 }
 
-int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisicas_pte_jugador){
+int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int tipo, int * dir_fisicas_pte_jugador){
 	int nuevo_cr3 = dame_libre();
 	
 	int i = 0;
@@ -177,11 +177,12 @@ int mmu_inicializar_dir_pirata(int x, int y, int posicion_codigo, int * dir_fisi
 	//calcular la posicion en el mapa fisico
 	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((y * MAPA_ANCHO) + x)*0x1000;
 	//calcular las posiciones aledañas
-
-	for(i=-1; i<2; i++) {
-		for(j=-1; j<2; j++) {
-			if( x + i >= 0 && x + i < MAPA_ANCHO && y + j >= 0 && y + j < MAPA_ALTO){
-				mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
+	if(tipo == 0){
+		for(i=-1; i<2; i++) {
+			for(j=-1; j<2; j++) {
+				if( x + i >= 0 && x + i < MAPA_ANCHO && y + j >= 0 && y + j < MAPA_ALTO){
+					mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, nuevo_cr3, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
+				}
 			}
 		}
 	}
@@ -216,10 +217,12 @@ void mmu_mover_pirata(uint cr3_tarea_actual, uint x, uint y, uint tipo, uint ind
 	int dir_fisica_posicion_en_mapa = MAPA_BASE_FISICA + ((y * MAPA_ANCHO) + x)*0x1000;
 	//calcular las posiciones aledañas
 	int i, j;
-	for(i=-1; i<2; i++) {
-		for(j=-1; j<2; j++) {
-			if( x + i >= 0 && x + i < MAPA_ANCHO && y + j >= 0 && y + j < MAPA_ALTO){
-				mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, cr3_tarea_actual, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
+	if(tipo == 0) {
+		for(i=-1; i<2; i++) {
+			for(j=-1; j<2; j++) {
+				if( x + i >= 0 && x + i < MAPA_ANCHO && y + j >= 0 && y + j < MAPA_ALTO){
+					mmu_mapear_pagina(dir_virtual_posicion_en_mapa + ((i * MAPA_ANCHO) + j)*0x1000, cr3_tarea_actual, dir_fisica_posicion_en_mapa  + ((i * MAPA_ANCHO) + j)*0x1000, 1, 1);
+				}
 			}
 		}
 	}

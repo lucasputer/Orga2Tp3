@@ -194,7 +194,7 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 	tss_pirata->ebp = CODIGO_BASE + 0x1000;
 	tss_pirata->eip = CODIGO_BASE;
 
-	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, jugador->direcciones_page_tables);
+	tss_pirata->cr3 = mmu_inicializar_dir_pirata(pirata.x, pirata.y, tarea, pirata.es_minero, jugador->direcciones_page_tables);
 	
 
 	if(rtr() != 0x0070) {
@@ -261,9 +261,9 @@ void tss_inicializar_explorador_temp() {
 	tss_explorador->eip = CODIGO_BASE;
 	int i = 0;
 	for(i=0;i<3;i++){
-		fisicas[i] = dame_libre();
+		fisicas[i] = dame_libre();	
 	}
-	tss_explorador->cr3 = mmu_inicializar_dir_pirata(1, 1, tarea, fisicas);
+	tss_explorador->cr3 = mmu_inicializar_dir_pirata(1, 1, tarea, 0,fisicas);
 
 	gdt[GDT_IDX_TSS_EXPLORADOR].limit_0_15 = 0x1000;
     gdt[GDT_IDX_TSS_EXPLORADOR].base_0_15 = ((unsigned int)(tss_explorador));
