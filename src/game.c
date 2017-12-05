@@ -19,7 +19,7 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 #define POS_INIT_B_Y          MAPA_ALTO - 2
 
 #define CANT_POSICIONES_VISTAS            9
-#define MAX_SIN_CAMBIOS                9999
+#define MAX_SIN_CAMBIOS                4999
 
 //pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
@@ -195,7 +195,8 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	    for(i=-1; i<2; i++) {
 	        for(j=-1; j<2; j++) {
 	        	if(game_posicion_valida(pirata->x + i, pirata->y + j)){
-	        		if(jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] == 0){
+	        		int estado_posicion = jugador->posiciones_exploradas[pirata->x + i][pirata->y + j];
+	        		if(estado_posicion == 0){ // != 1 && estado_posicion != 2 && estado_posicion != 3){
 	        			screen_pintar_vacio(jugador, pirata->x +i, pirata->y +j);
 	        			jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 1;
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
