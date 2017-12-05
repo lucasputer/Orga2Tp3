@@ -29,7 +29,7 @@ extern screen_pintar_tecla
 extern sched_tick
 extern sched_jugador_actual
 extern game_tick
-extern game_jugador_lanzar_pirata
+extern game_jugador_lanzar_explorador
 extern game_syscall_pirata_mover
 extern game_syscall_pirata_posicion
 extern game_syscall_pirata_cavar
@@ -161,12 +161,10 @@ _isr33:
     jmp .fin_teclado
 
     .lanzar_explorador:
-    xor ebx, ebx
-    push ebx
     push ecx
-    call game_jugador_lanzar_pirata
+    call game_jugador_lanzar_explorador
     
-    add esp, 8
+    add esp, 4
 
     jmp .fin_teclado
 

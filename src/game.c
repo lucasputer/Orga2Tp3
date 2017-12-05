@@ -141,8 +141,21 @@ void game_pirata_relanzar(pirata_t *pirata, jugador_t *j, uint tipo)
 {
 }
 
+void game_jugador_lanzar_explorador(int j)
+{	
+	jugador_t* jugador = &jugadorA;
+	if(j == 1){
+		jugador = &jugadorB;
+	}
+	game_jugador_lanzar_pirata(j, 0,jugador->x_puerto, jugador->y_puerto);
+}
 
-void game_jugador_lanzar_pirata(int j, uint tipo)
+void game_jugador_lanzar_minero(int j, int x, int y)
+{
+	game_jugador_lanzar_pirata(j, 1, x, y);
+}
+
+void game_jugador_lanzar_pirata(int j, uint tipo, int x, int y)
 {
 	jugador_t *jugador;
 	if(j == 0){
@@ -174,7 +187,7 @@ void game_jugador_lanzar_pirata(int j, uint tipo)
 
 	game_pirata_inicializar(&(jugador->piratas[i]), jugador, id, tipo);
 	//lanzar la tarea
-	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i]);
+	tss_inicializar_pirata(tipo, i,jugador,jugador->piratas[i],x,y);
 
 	if(tipo == 0){
 		game_chequear_botin(jugador,&(jugador->piratas[i]));
@@ -201,8 +214,8 @@ void game_chequear_botin(jugador_t* jugador, pirata_t* pirata)
 	        			for(b = 0; b < BOTINES_CANTIDAD; b++){
 	        				if( pirata->x + i == botines[b][0] && pirata->y + j == botines[b][1]){
 	        					if(botines[b][2] > 0){
-	        						game_jugador_lanzar_pirata(jugador->index, 1);
-	        						screen_pintar_botin(jugador, pirata->x +i, pirata->y +j);
+	        						game_jugador_lanzar_minero(jugador->index, pirata->x + i, pirata->y + j);
+	        						screen_pintar_botin(jugador, pirata->x + i, pirata->y + j);
 	        						jugador->posiciones_exploradas[pirata->x + i][pirata->y + j] = 2;
 	        					}else{
 	        						screen_pintar_botin_vacio(jugador, pirata->x +i, pirata->y +j);
@@ -426,29 +439,4 @@ void game_matar_pirata(uint tr) {
 
 void game_atender_teclado(unsigned char tecla)
 {
-}
-
-
-void game_dame_posicion_botin(int *x, int *y){
-	int i,j;
-	int encontro_x = 0;
-	int encontro_y = 0;
-	for(i=-1;i<2;i++) {
-		for(j=-1;j<2;j++) {
-			int b;
-			int nueva_x = *x+i;
-			int nueva_y = *y+j;
-			for(b=0;b<BOTINES_CANTIDAD && (encontro_x == 0 || encontro_y == 0);b++){
-				if(botines[b][0] == nueva_x) {
-					*x = nueva_x;
-					encontro_x = 1;
-				}
-				if(botines[b][1] == nueva_y) {
-					*y = nueva_y;
-					encontro_y = 1;
-				}
-				
-			}
-		}
-	}
 }

@@ -137,7 +137,6 @@ void sched_terminar_juego(){
 }
 
 void set_ultimo_jugador_a(uint valor){
-	breakpoint();
 	ultimo_jugadorA = valor;
 }
 

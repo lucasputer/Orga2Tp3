@@ -64,7 +64,9 @@ void game_inicializar();
 uint game_posicion_valida(int x, int y);
 
 void game_jugador_inicializar(jugador_t *j);
-void game_jugador_lanzar_pirata(int j, uint tipo);
+void game_jugador_lanzar_explorador(int j);
+void game_jugador_lanzar_minero(int j, int x, int y);
+void game_jugador_lanzar_pirata(int j, uint tipo, int x, int y);
 void game_jugador_anotar_punto(jugador_t *j);
 void game_chequear_botin(jugador_t *jugador, pirata_t* pirata);
 

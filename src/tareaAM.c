@@ -16,7 +16,6 @@ void task(int x_target, int y_target) {
     uint pos = syscall_posicion(-1);
     int x = pos & 0xFF;
     int y = pos >> 8;
-    //breakpoint();
     int i;
     for(i=x; i < x_target; i++)
         syscall_mover(DER);
