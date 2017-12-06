@@ -59,7 +59,7 @@ void tss_inicializar() {
 	tss_inicial.dtrap=0;
 	tss_inicial.iomap=0;
 
-	gdt[GDT_IDX_TSS_INIT].limit_0_15 = 0x1000;
+	gdt[GDT_IDX_TSS_INIT].limit_0_15 = 0x0FFF;
     gdt[GDT_IDX_TSS_INIT].base_0_15 = ((unsigned int)(&tss_inicial));
     gdt[GDT_IDX_TSS_INIT].base_23_16 = ((unsigned int)(&tss_inicial)>>16);
     gdt[GDT_IDX_TSS_INIT].type = 0x09;
@@ -115,7 +115,7 @@ void tss_inicializar_idle() {
 	tss_idle.dtrap=0;
 	tss_idle.iomap=0xFFFF;
 
-	gdt[GDT_IDX_TSS_IDLE].limit_0_15 = 0x1000;
+	gdt[GDT_IDX_TSS_IDLE].limit_0_15 = 0x0FFF;
     gdt[GDT_IDX_TSS_IDLE].base_0_15 = ((unsigned int)(&tss_idle));
     gdt[GDT_IDX_TSS_IDLE].base_23_16 = ((unsigned int)(&tss_idle)>>16);
     gdt[GDT_IDX_TSS_IDLE].type = 0x09;
@@ -232,7 +232,7 @@ void tss_inicializar_pirata(int tipo, int index,  jugador_t* jugador, pirata_t p
 
 	uint gdt_index = pirata.id;
 
-	gdt[gdt_index].limit_0_15 = 0x1000;
+	gdt[gdt_index].limit_0_15 = 0x0FFF;
     gdt[gdt_index].base_0_15 = ((unsigned int)(tss_pirata));
     gdt[gdt_index].base_23_16 = ((unsigned int)(tss_pirata)>>16);
     gdt[gdt_index].type = 0x09;
@@ -261,7 +261,7 @@ void tss_inicializar_explorador_temp() {
 	}
 	tss_explorador->cr3 = mmu_inicializar_dir_pirata(1, 1, tarea, 0,fisicas);
 
-	gdt[GDT_IDX_TSS_EXPLORADOR].limit_0_15 = 0x1000;
+	gdt[GDT_IDX_TSS_EXPLORADOR].limit_0_15 = 0x0FFF;
     gdt[GDT_IDX_TSS_EXPLORADOR].base_0_15 = ((unsigned int)(tss_explorador));
     gdt[GDT_IDX_TSS_EXPLORADOR].base_23_16 = ((unsigned int)(tss_explorador)>>16);
     gdt[GDT_IDX_TSS_EXPLORADOR].type = 0x09;
