@@ -19,9 +19,8 @@ TRABAJO PRACTICO 3 - System Programming - ORGANIZACION DE COMPUTADOR II - FCEN
 #define POS_INIT_B_Y          MAPA_ALTO - 2
 
 #define CANT_POSICIONES_VISTAS            9
-#define MAX_SIN_CAMBIOS                9999
+#define MAX_SIN_CAMBIOS                4000
 
-//pase BOTINES_CANTIDAD al .h, esta feito, consultar 
 
 uint botines[BOTINES_CANTIDAD][3] = { // TRIPLAS DE LA FORMA (X, Y, MONEDAS)
                                         {30,  1, 50}, {31, 38, 50}, {15, 21, 100}, {45, 21, 100} ,
